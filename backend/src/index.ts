@@ -4,7 +4,7 @@ import { Ad } from "./types";
 const app = express();
 const port = 3000;
 
-const ads: Ad[] = [
+let ads: Ad[] = [
   {
     id: 1,
     title: "Bike to sell",
@@ -48,8 +48,57 @@ app.post("/ads", (req: Request, res: Response) => {
     id,
     createdAt: new Date().toISOString(),
   };
+
+  /* imperative / mutation :
   ads.push(req.body);
+  */
+
+  // declarative / immutable :
+  ads = [...ads, newAd];
+
   res.send(newAd);
+});
+
+app.delete("/ads/:id", (req: Request, res: Response) => {
+  const idOfAdToDelete = parseInt(req.params.id, 10);
+
+  if (!ads.find((ad) => ad.id === idOfAdToDelete)) return res.sendStatus(404);
+
+  /* imperative / mutation :
+  ads.splice(
+    ads.findIndex((ad) => ad.id === idOfAdToDelete),
+    1
+  );
+  */
+
+  // declarative / immutable :
+  ads = ads.filter((ad) => ad.id !== idOfAdToDelete);
+
+  res.status(204).send({ message: "ad deleted !" });
+});
+
+app.patch("/ads/:id", (req: Request, res: Response) => {
+  const idOfAdToUpdate = parseInt(req.params.id, 10);
+
+  const adToUpdate = ads.find((ad) => ad.id === idOfAdToUpdate);
+  if (!adToUpdate) return res.sendStatus(404);
+
+  const indexOfAdToUpdate = ads.findIndex((ad) => ad.id === idOfAdToUpdate);
+
+  /* imperative / mutation :
+  ads[indexOfAdToUpdate] = {
+    ...adToUpdate,
+    ...req.body,
+  };
+  */
+
+  // declarative / immutable :
+  ads = ads.map((ad) => {
+    if (ad.id === idOfAdToUpdate) return { ...ad, ...req.body };
+    else return ad;
+  });
+
+  res.send(ads[indexOfAdToUpdate]);
 });
 
 app.listen(port, () => {
