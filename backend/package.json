@@ -1,0 +1,29 @@
+{
+  "name": "the-good-corner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node-dev src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ComicScrip/the-good-corner.git"
+  },
+  "keywords": [
+    "ads"
+  ],
+  "author": "Pierre Genthon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ComicScrip/the-good-corner/issues"
+  },
+  "homepage": "https://github.com/ComicScrip/the-good-corner#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "ts-node-dev": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17"
+  }
+}
