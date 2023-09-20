@@ -1,6 +1,7 @@
-PATCH http://localhost:3000/ads/1
+PATCH http://localhost:3000/ads/2
 Content-Type: application/json
 
 {
-  "title": "Macbook air M2"
+  "title": "Macbook air",
+  "price": 700
 }
