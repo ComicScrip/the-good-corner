@@ -73,13 +73,16 @@ app.patch("/ads/:id", (req: Request, res: Response) => {
     }
     if (!row) return res.sendStatus(404);
 
+    // creates a string with this shape : "title = $title, description = $description, ..."
+    const setProps = Object.keys(req.body)
+      .reduce<string[]>((acc, prop) => [...acc, `${prop} = $${prop}`], [])
+      .join(", ");
+
+    // creates an object with this shape : {$title: "title sent by client", "$description: " description sent by client", ...}
     const propsToUpdate = Object.keys(req.body).reduce(
       (acc, prop) => ({ ...acc, [`$${prop}`]: req.body[prop] }),
       {}
     );
-    const setProps = Object.keys(req.body)
-      .reduce<string[]>((acc, prop) => [...acc, `${prop} = $${prop}`], [])
-      .join(", ");
 
     db.run(
       `UPDATE ad SET ${setProps} WHERE id = $id`,
