@@ -1,4 +1,4 @@
-PATCH http://localhost:3000/ads/2
+PATCH http://localhost:3000/ads/1
 Content-Type: application/json
 
 {
