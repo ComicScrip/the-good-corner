@@ -121,9 +121,12 @@ app.patch("/ads/:id", async (req: Request, res: Response) => {
   try {
     const adToUpdate = await Ad.findOneBy({ id: parseInt(req.params.id, 10) });
     if (!adToUpdate) return res.sendStatus(404);
-    await Ad.merge(adToUpdate, req.body);
-    const { tagIds } = req.body;
 
+    await Ad.merge(adToUpdate, req.body);
+    const errors = await validate(adToUpdate);
+    if (errors.length !== 0) return res.status(422).send({ errors });
+
+    const { tagIds } = req.body;
     if (Array.isArray(tagIds)) {
       const tagsToAssociate = await Tag.find({ where: { id: In(tagIds) } });
       adToUpdate.tags = tagsToAssociate;
