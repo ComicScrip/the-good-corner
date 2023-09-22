@@ -3,15 +3,59 @@ import express, { Request, Response } from "express";
 import { validate } from "class-validator";
 import db from "./db";
 import { Ad } from "./entities/ad";
+import { Category } from "./entities/category";
+import { Tag } from "./entities/tag";
+import { In, Like } from "typeorm";
 
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 
-app.get("/ads", async (req: Request, res: Response) => {
+app.get("/tags", async (req: Request, res: Response) => {
   try {
-    const ads = await Ad.find();
+    const { name } = req.query;
+    const tags = await Tag.find({
+      where: { name: name ? Like(`%${name}%`) : undefined },
+    });
+    res.send(tags);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+app.get("/categories", async (req: Request, res: Response) => {
+  try {
+    const categories = await Category.find({
+      relations: {
+        ads: true,
+      },
+    });
+    res.send(categories);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+app.get("/ads", async (req: Request, res: Response) => {
+  const { tagIds } = req.query;
+  try {
+    const ads = await Ad.find({
+      relations: {
+        category: true,
+        tags: true,
+      },
+      where: {
+        tags: {
+          id:
+            typeof tagIds === "string" && tagIds.length > 0
+              ? In(tagIds.split(",").map((t) => parseInt(t, 10)))
+              : undefined,
+        },
+      },
+    });
     res.send(ads);
   } catch (err) {
     console.log(err);
@@ -21,18 +65,26 @@ app.get("/ads", async (req: Request, res: Response) => {
 
 app.post("/ads", async (req: Request, res: Response) => {
   try {
-    /*
-      const newAd = new Ad()
-      newAd.title = req.body.title
-      newAd.price = req.body.price
-      ...
-      const newAdWithId = await newAd.save();
-    */
     const newAd = Ad.create(req.body);
     const errors = await validate(newAd);
-    if (errors) return res.status(422).send({ errors });
+    if (errors.length !== 0) return res.status(422).send({ errors });
+    const { tagIds = [] } = req.body;
+    const tagsToAssociate = await Tag.find({ where: { id: In(tagIds) } });
+    newAd.tags = tagsToAssociate;
     const newAdWithId = await newAd.save();
     res.send(newAdWithId);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+app.post("/tags", async (req: Request, res: Response) => {
+  try {
+    const newTag = Tag.create(req.body);
+    const errors = await validate(newTag);
+    if (errors.length !== 0) return res.status(422).send({ errors });
+    res.send(await newTag.save());
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -51,12 +103,32 @@ app.delete("/ads/:id", async (req: Request, res: Response) => {
   }
 });
 
+app.delete("/tags/:id", async (req: Request, res: Response) => {
+  try {
+    const tagToDelete = await Tag.findOneBy({
+      id: parseInt(req.params.id, 10),
+    });
+    if (!tagToDelete) return res.sendStatus(404);
+    await tagToDelete.remove();
+    res.sendStatus(204);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 app.patch("/ads/:id", async (req: Request, res: Response) => {
   try {
     const adToUpdate = await Ad.findOneBy({ id: parseInt(req.params.id, 10) });
     if (!adToUpdate) return res.sendStatus(404);
-    await Ad.update(parseInt(req.params.id, 10), req.body);
     await Ad.merge(adToUpdate, req.body);
+    const { tagIds } = req.body;
+
+    if (Array.isArray(tagIds)) {
+      const tagsToAssociate = await Tag.find({ where: { id: In(tagIds) } });
+      adToUpdate.tags = tagsToAssociate;
+    }
+
     res.send(await adToUpdate.save());
   } catch (err) {
     console.log(err);
