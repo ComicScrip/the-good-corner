@@ -9,11 +9,11 @@ import {
   ManyToMany,
 } from "typeorm";
 import { Length, Min } from "class-validator";
-import { Category } from "./category";
-import { Tag } from "./tag";
+import Category from "./category";
+import Tag from "./tag";
 
 @Entity()
-export class Ad extends BaseEntity {
+export default class Ad extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

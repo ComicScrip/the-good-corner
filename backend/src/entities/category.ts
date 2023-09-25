@@ -5,10 +5,10 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
-import { Ad } from "./ad";
+import Ad from "./ad";
 
 @Entity()
-export class Category extends BaseEntity {
+export default class Category extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

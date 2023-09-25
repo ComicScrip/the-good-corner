@@ -2,9 +2,9 @@ import "reflect-metadata";
 import express, { Request, Response } from "express";
 import { validate } from "class-validator";
 import db from "./db";
-import { Ad } from "./entities/ad";
-import { Category } from "./entities/category";
-import { Tag } from "./entities/tag";
+import Ad from "./entities/ad";
+import Category from "./entities/category";
+import Tag from "./entities/tag";
 import { In, Like } from "typeorm";
 
 const app = express();
