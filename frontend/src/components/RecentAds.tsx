@@ -1,54 +1,33 @@
 import { useEffect, useState } from "react";
 import AdCard from "./AdCard";
+import { Ad } from "@/types";
+import axios from "axios";
 
 export default function RecentAds() {
-  const ads = [
-    {
-      link: "/ads/table",
-      imgUrl: "/images/table.webp",
-      title: "Table",
-      price: 120,
-    },
-    {
-      link: "/ads/dame-jeanne",
-      imgUrl: "/images/dame-jeanne.webp",
-      title: "Dame-jeanne",
-      price: 75,
-    },
-    {
-      link: "/ads/vide-poche",
-      imgUrl: "/images/vide-poche.webp",
-      title: "Vide-poche",
-      price: 4,
-    },
-    {
-      link: "/ads/vaisselier",
-      imgUrl: "/images/vaisselier.webp",
-      title: "Vaisselier",
-      price: 900,
-    },
-    {
-      link: "/ads/bougie",
-      imgUrl: "/images/bougie.webp",
-      title: "Bougie",
-      price: 8,
-    },
-    {
-      link: "/ads/porte-magazine",
-      imgUrl: "/images/porte-magazine.webp",
-      title: "Porte-magazine",
-      price: 45,
-    },
-  ];
+  const [ads, setAds] = useState<Ad[]>([]);
+
+  useEffect(() => {
+    /*
+    const fetchAds = async () => {
+      try {
+        const res = await axios.get<Ad[]>("http://localhost:4000/ads");
+        setAds(res.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchAds();
+    */
+    axios
+      .get<Ad[]>("http://localhost:4000/ads")
+      .then((res) => setAds(res.data))
+      .catch(console.error);
+  }, []);
 
   const [total, setTotal] = useState(0);
 
   const handleAddPrice = (price: number) =>
     setTotal((oldTotal) => oldTotal + price);
-
-  useEffect(() => {
-    console.log("first render");
-  }, []);
 
   return (
     <>
@@ -59,7 +38,12 @@ export default function RecentAds() {
       </button>
       <section className="recent-ads">
         {ads.map((ad) => (
-          <AdCard {...ad} onAddPrice={handleAddPrice} key={ad.title} />
+          <AdCard
+            onAddPrice={handleAddPrice}
+            key={ad.title}
+            ad={ad}
+            link={`/ads/${ad.id}`}
+          />
         ))}
       </section>
     </>
