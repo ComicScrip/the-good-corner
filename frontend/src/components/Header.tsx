@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const categories = [
@@ -17,6 +19,18 @@ export default function Header() {
     { name: "Vacances" },
   ];
 
+  const router = useRouter();
+
+  console.log(router.query.title);
+
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    if (typeof router.query.title === "string") {
+      setSearch(router.query.title);
+    }
+  }, [router.query.title]);
+
   return (
     <header className="header">
       <div className="main-menu">
@@ -26,8 +40,19 @@ export default function Header() {
             <span className="desktop-long-label">THE GOOD CORNER</span>
           </Link>
         </h1>
-        <form className="text-field-with-button">
-          <input className="text-field main-search-field" type="search" />
+        <form
+          className="text-field-with-button"
+          onSubmit={(e) => {
+            e.preventDefault();
+            router.push(`/search?title=${search}`);
+          }}
+        >
+          <input
+            className="text-field main-search-field"
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <button className="button button-primary">
             <svg
               aria-hidden="true"
