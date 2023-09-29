@@ -7,6 +7,7 @@ export type Ad = {
   picture: string;
   createdAt: string;
   id: number;
+  category?: Category;
 };
 
 export type Category = {

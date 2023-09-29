@@ -128,8 +128,11 @@ app.patch("/categories/:id", async (req: Request, res: Response) => {
 });
 
 app.get("/ads", async (req: Request, res: Response) => {
-  const { tagIds } = req.query;
+  const { tagIds, categoryId } = req.query;
   const title = req.query.title as string | undefined;
+
+  console.log({ categoryId });
+
   try {
     const ads = await Ad.find({
       relations: {
@@ -144,6 +147,9 @@ app.get("/ads", async (req: Request, res: Response) => {
               : undefined,
         },
         title: title ? Like(`%${title}%`) : undefined,
+        category: {
+          id: categoryId ? parseInt(categoryId as string, 10) : undefined,
+        },
       },
     });
     res.send(ads);
@@ -196,7 +202,10 @@ app.patch("/ads/:id", async (req: Request, res: Response) => {
 
 app.get("/ads/:id", async (req: Request, res: Response) => {
   try {
-    const ad = await Ad.findOneBy({ id: parseInt(req.params.id, 10) });
+    const ad = await Ad.findOne({
+      where: { id: parseInt(req.params.id, 10) },
+      relations: { category: true },
+    });
     if (!ad) return res.sendStatus(404);
     res.send(ad);
   } catch (err) {
