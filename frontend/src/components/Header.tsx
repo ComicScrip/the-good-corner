@@ -1,27 +1,21 @@
+import { Category } from "@/types";
+import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import qs from "query-string";
 
 export default function Header() {
-  const categories = [
-    { name: "Ameublement" },
-    { name: "Électroménager" },
-    { name: "Photographie" },
-    { name: "Informatique" },
-    { name: "Téléphonie" },
-    { name: "Vélos" },
-    { name: "Véhicules" },
-    { name: "Sport" },
-    { name: "Habillement" },
-    { name: "Bébé" },
-    { name: "Outillage" },
-    { name: "Services" },
-    { name: "Vacances" },
-  ];
-
   const router = useRouter();
 
-  console.log(router.query.title);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    axios
+      .get<Category[]>("http://localhost:4000/categories")
+      .then((res) => setCategories(res.data))
+      .catch(console.error);
+  }, []);
 
   const [search, setSearch] = useState("");
 
@@ -31,26 +25,34 @@ export default function Header() {
     }
   }, [router.query.title]);
 
+  const searchParams = qs.parse(window.location.search) as any;
+
   return (
     <header className="header">
       <div className="main-menu">
         <h1>
           <Link href="/" className="button logo link-button">
             <span className="mobile-short-label">TGC</span>
-            <span className="desktop-long-label">THE GOOD CORNER</span>
+            <span className="desktop-long-label text-xl">THE GOOD CORNER</span>
           </Link>
         </h1>
         <form
           className="text-field-with-button"
           onSubmit={(e) => {
             e.preventDefault();
-            router.push(`/search?title=${search}`);
+            router.push(
+              `/search?${qs.stringify({
+                ...searchParams,
+                title: search,
+              })}`
+            );
           }}
         >
           <input
-            className="text-field main-search-field"
+            className="text-field main-search-field text-gray-700"
             type="search"
             value={search}
+            placeholder="Rechercher.."
             onChange={(e) => setSearch(e.target.value)}
           />
           <button className="button button-primary">
@@ -69,17 +71,37 @@ export default function Header() {
             </svg>
           </button>
         </form>
-        <a href="/post-ad" className="button link-button">
+        <Link href="/newAd" className="button link-button">
           <span className="mobile-short-label">Publier</span>
           <span className="desktop-long-label">Publier une annonce</span>
-        </a>
+        </Link>
       </div>
-      <nav className="categories-navigation">
-        {categories.map((cat) => (
-          <a href="" className="category-navigation-link" key={cat.name}>
-            {cat.name}
-          </a>
-        ))}
+      <nav className="flex pl-2 h-[54px]">
+        {categories.map((cat) => {
+          const [firstLetter, ...resetOfCatName] = cat.name.split("");
+          const catName = firstLetter.toUpperCase() + resetOfCatName.join("");
+          const isActive = router.query.categoryId === cat.id.toString();
+
+          return (
+            <div
+              className={`p-2 rounded-lg mt-3 cursor-pointer ${
+                isActive ? "bg-[#ffa41b] text-white" : ""
+              }`}
+              onClick={() => {
+                router.push(
+                  "/search?" +
+                    qs.stringify({
+                      ...searchParams,
+                      categoryId: isActive ? undefined : cat.id,
+                    })
+                );
+              }}
+              key={catName}
+            >
+              {catName}
+            </div>
+          );
+        })}
       </nav>
     </header>
   );
