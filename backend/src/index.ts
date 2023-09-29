@@ -56,7 +56,6 @@ app.delete("/tags/:id", async (req: Request, res: Response) => {
 });
 
 app.patch("/tags/:id", async (req: Request, res: Response) => {
-  console.log("hellllo");
   try {
     const tagToUpdate = await Tag.findOneBy({
       id: parseInt(req.params.id, 10),

@@ -15,7 +15,6 @@ export default function AdminTags() {
   }, []);
 
   const handleDeleteTag = async (id: number) => {
-    console.log({ id });
     try {
       await axios.delete(`http://localhost:4000/tags/${id}`);
       setTags((tagList) => tagList?.filter((t) => t.id !== id));

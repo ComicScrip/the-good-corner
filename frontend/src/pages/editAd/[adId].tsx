@@ -33,7 +33,6 @@ export default function EditAd() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("envoi des données");
     const formData = new FormData(e.target as HTMLFormElement);
     const formJSON: any = Object.fromEntries(formData.entries());
     formJSON.price = parseFloat(formJSON.price);
