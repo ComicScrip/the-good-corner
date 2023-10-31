@@ -7,6 +7,9 @@ import { Category } from "./entities/category";
 import { Tag } from "./entities/tag";
 import { In, Like } from "typeorm";
 import cors from "cors";
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { GraphQLError } from "graphql";
 
 const app = express();
 const port = 4000;
@@ -130,8 +133,6 @@ app.get("/ads", async (req: Request, res: Response) => {
   const { tagIds, categoryId } = req.query;
   const title = req.query.title as string | undefined;
 
-  console.log({ categoryId });
-
   try {
     const ads = await Ad.find({
       relations: {
@@ -217,3 +218,74 @@ app.listen(port, async () => {
   await db.initialize();
   console.log(`Server running on http://localhost:${port}`);
 });
+
+const typeDefs = `#graphql
+  type Category{
+    id: Int
+    name: String
+  }
+  type Tag{
+    id: Int
+    name: String
+  }
+  type Ad {
+    id: Int
+    title: String
+    description: String
+    owner: String
+    price: Float
+    location: String
+    picture: String
+    createdAt: String
+    category: Category
+    tags: [Tag]
+  }
+
+  type Query {
+    ads: [Ad]
+    getAdById(id: ID): Ad
+  }
+
+  input TagInput {
+    name: String
+  }
+
+  type Mutation {
+    createTag(data: TagInput): Tag
+  }
+`;
+
+const resolvers = {
+  Query: {
+    ads: async () => {
+      return Ad.find({ relations: { category: true, tags: true } });
+    },
+    getAdById: async (_: any, args: { id: string }) => {
+      const ad = await Ad.findOne({
+        where: { id: parseInt(args.id, 10) },
+        relations: { category: true, tags: true },
+      });
+      if (!ad) throw new GraphQLError("not found");
+      return ad;
+    },
+  },
+  Mutation: {
+    createTag: async (_: any, args: { data: { name: string } }) => {
+      const newTag = Tag.create({ name: args.data.name });
+      const errors = await validate(newTag);
+      if (errors.length !== 0)
+        throw new GraphQLError("invalid data", { extensions: { errors } });
+      const newTagWithId = await newTag.save();
+      return newTagWithId;
+    },
+  },
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+startStandaloneServer(server, {
+  listen: { port: 4001 },
+}).then(({ url }) => console.log(`graphql server listening on ${url}`));
