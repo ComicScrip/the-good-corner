@@ -10,8 +10,9 @@ import cors from "cors";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
-import AdsResolver from "./resolvers/adsResolver copy";
+import AdsResolver from "./resolvers/adsResolver";
 import TagsResolver from "./resolvers/tagsResolver";
+import CategoriesResolver from "./resolvers/categoriesResolver";
 
 const app = express();
 const port = 4000;
@@ -222,7 +223,7 @@ app.listen(port, async () => {
 });
 
 buildSchema({
-  resolvers: [TagsResolver, AdsResolver],
+  resolvers: [TagsResolver, AdsResolver, CategoriesResolver],
 }).then((schema) => {
   const server = new ApolloServer({ schema });
   startStandaloneServer(server, {

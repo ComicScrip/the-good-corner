@@ -5,8 +5,9 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
+import { ObjectType, Field, Int, InputType } from "type-graphql";
 import { Ad } from "./ad";
-import { ObjectType, Field, Int } from "type-graphql";
+import { Length } from "class-validator";
 
 @Entity()
 @ObjectType()
@@ -21,4 +22,17 @@ export class Category extends BaseEntity {
 
   @OneToMany(() => Ad, (ad) => ad.category)
   ads: Ad[];
+}
+
+@InputType()
+export class NewCategoryInput {
+  @Field()
+  @Length(2, 30, { message: "Le nom doit contenir entre 2 et 30 caractères" })
+  name: string;
+}
+@InputType()
+export class UpdateCategoryInput {
+  @Field({ nullable: true })
+  @Length(2, 30, { message: "Le nom doit contenir entre 2 et 30 caractères" })
+  name?: string;
 }

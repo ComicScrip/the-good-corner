@@ -28,5 +28,13 @@ export class Tag extends BaseEntity {
 @InputType()
 export class NewTagInput {
   @Field()
+  @Length(2, 30, { message: "Le nom doit contenir entre 2 et 30 caractères" })
   name: string;
+}
+
+@InputType()
+export class UpdateTagInput {
+  @Field({ nullable: true })
+  @Length(2, 30, { message: "Le nom doit contenir entre 2 et 30 caractères" })
+  name?: string;
 }
