@@ -3,9 +3,35 @@ import { Category } from "@/types";
 import { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { gql, useMutation } from "@apollo/client";
+
+const CREATE_AD = gql`
+  mutation CreateAd($data: NewAdInput!) {
+    createAd(data: $data) {
+      id
+    }
+  }
+`;
 
 export default function NewAd() {
   const [categories, setCategories] = useState<Category[]>([]);
+
+  const [createAd] = useMutation<
+    { createAd: { id: number } },
+    {
+      data: {
+        title: string;
+        description: string;
+        owner: string;
+        price: number;
+        location: string;
+        picture: string;
+        category: {
+          id: number;
+        };
+      };
+    }
+  >(CREATE_AD);
 
   useEffect(() => {
     axios
@@ -22,12 +48,13 @@ export default function NewAd() {
     const formJSON: any = Object.fromEntries(formData.entries());
     formJSON.price = parseFloat(formJSON.price);
 
-    axios
-      .post("http://localhost:4000/ads", formJSON)
-      .then((res) => {
-        router.push(`/ads/${res.data.id}`);
-      })
-      .catch(console.error);
+    createAd({
+      variables: {
+        data: { ...formJSON, category: { id: parseInt(formJSON.category) } },
+      },
+    }).then((res) => {
+      router.push(`/ads/${res.data?.createAd.id}`);
+    });
   };
 
   return (

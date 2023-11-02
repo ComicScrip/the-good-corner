@@ -1,9 +1,33 @@
-import { useEffect, useState } from "react";
 import AdCard from "./AdCard";
-import { Ad } from "@/types";
-import axios from "axios";
+
+const GET_RECENT_ADS = gql`
+  query Ads {
+    ads {
+      id
+      title
+      price
+      picture
+    }
+  }
+`;
+
+export type RecentAd = {
+  id: number;
+  title: string;
+  price: number;
+  picture: string;
+};
+
+import { useQuery, gql } from "@apollo/client";
 
 export default function RecentAds() {
+  const { data, loading } = useQuery<{ ads: RecentAd[] }>(GET_RECENT_ADS);
+
+  if (loading) return "Chargement...";
+
+  const ads = data?.ads || [];
+
+  /*
   const [ads, setAds] = useState<Ad[]>([]);
 
   useEffect(() => {
@@ -12,6 +36,7 @@ export default function RecentAds() {
       .then((res) => setAds(res.data))
       .catch(console.error);
   }, []);
+  */
 
   return (
     <div className="pt-6">
@@ -19,7 +44,7 @@ export default function RecentAds() {
 
       <section className="flex flex-wrap pb-24">
         {ads.map((ad) => (
-          <AdCard key={ad.title} ad={ad} link={`/ads/${ad.id}`} />
+          <AdCard key={ad.id} ad={ad} link={`/ads/${ad.id}`} />
         ))}
       </section>
     </div>

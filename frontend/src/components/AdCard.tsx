@@ -1,8 +1,8 @@
-import { Ad } from "@/types";
 import Link from "next/link";
+import { RecentAd } from "./RecentAds";
 
 type AdCardProps = {
-  ad: Ad;
+  ad: RecentAd;
   link: string;
 };
 export default function AdCard({
