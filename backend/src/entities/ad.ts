@@ -109,7 +109,7 @@ export class UpdateAdInput {
   price?: number;
 
   @Field({ nullable: true })
-  location?: string;
+  city?: string;
 
   @Field({ nullable: true })
   picture?: string;

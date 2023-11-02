@@ -3,35 +3,12 @@ import { Category } from "@/types";
 import { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { gql, useMutation } from "@apollo/client";
-
-const CREATE_AD = gql`
-  mutation CreateAd($data: NewAdInput!) {
-    createAd(data: $data) {
-      id
-    }
-  }
-`;
+import { useCreateAdMutation } from "@/graphql/generated/schema";
 
 export default function NewAd() {
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const [createAd] = useMutation<
-    { createAd: { id: number } },
-    {
-      data: {
-        title: string;
-        description: string;
-        owner: string;
-        price: number;
-        location: string;
-        picture: string;
-        category: {
-          id: number;
-        };
-      };
-    }
-  >(CREATE_AD);
+  const [createAd] = useCreateAdMutation();
 
   useEffect(() => {
     axios
