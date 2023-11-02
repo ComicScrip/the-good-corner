@@ -1,0 +1,11 @@
+query GetAdById($adId: Int!) {
+  getAdById(adId: $adId) {
+    id
+    title
+    price
+    picture
+    location
+    owner
+    description
+  }
+}
