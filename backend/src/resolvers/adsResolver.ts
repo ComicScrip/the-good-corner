@@ -30,7 +30,7 @@ class AdsResolver {
   }
 
   @Query(() => Ad)
-  async getAdById(@Arg("adId") id: number) {
+  async getAdById(@Arg("adId", () => Int) id: number) {
     const ad = await Ad.findOne({
       where: { id },
       relations: { category: true, tags: true },

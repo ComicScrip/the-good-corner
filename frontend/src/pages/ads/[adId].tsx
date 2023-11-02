@@ -1,27 +1,44 @@
 import Layout from "@/components/Layout";
-import { Ad } from "@/types";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_ONE_AD = gql`
+  query GetAdById($adId: Int!) {
+    getAdById(adId: $adId) {
+      id
+      title
+      price
+      picture
+      location
+      owner
+      description
+    }
+  }
+`;
+
+export type AdDetail = {
+  id: number;
+  title: string;
+  price: number;
+  picture: string;
+};
 
 export default function AdDetails() {
   const router = useRouter();
   const { adId } = router.query;
 
-  const [ad, setAd] = useState<Ad>();
+  const { data } = useQuery<{ getAdById: AdDetail }>(GET_ONE_AD, {
+    variables: { adId: typeof adId === "string" ? parseInt(adId, 10) : "" },
+    skip: typeof adId === "undefined",
+  });
 
-  useEffect(() => {
-    if (typeof ad === "undefined")
-      axios
-        .get<Ad>(`http://localhost:4000/ads/${adId}`)
-        .then((res) => setAd(res.data))
-        .catch(console.error);
-  }, [adId]);
+  const ad = data?.getAdById;
 
   return (
     <Layout title={ad?.title ? ad.title + " - TGC" : "The Good Corner"}>
