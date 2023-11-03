@@ -1,23 +1,24 @@
 import AdminCategoryRow from "@/components/admin/AdminCategoryRow";
 import AdminLayout from "@/components/admin/AdminLayout";
+import {
+  useCategoriesQuery,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+} from "@/graphql/generated/schema";
 import { Category } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
 export default function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    axios
-      .get<Category[]>("http://localhost:4000/categories")
-      .then((res) => setCategories(res.data))
-      .catch(console.error);
-  }, []);
+  const { data, refetch } = useCategoriesQuery();
+  const categories = data?.categories || [];
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const [createCategory] = useCreateCategoryMutation();
 
   const handleDeleteCategory = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:4000/categories/${id}`);
-      setCategories((catList) => catList?.filter((c) => c.id !== id));
+      await deleteCategory({ variables: { categoryId: id } });
+      refetch();
     } catch (e) {
       console.error(e);
     }
@@ -33,11 +34,9 @@ export default function AdminCategories() {
           const json = Object.fromEntries(data.entries());
 
           try {
-            const newCat = (
-              await axios.post("http://localhost:4000/categories", json)
-            ).data;
+            await createCategory({ variables: { data: json as any } });
             form.reset();
-            setCategories((oldList) => [newCat, ...oldList]);
+            refetch();
           } catch (err) {
             console.error(err);
           }

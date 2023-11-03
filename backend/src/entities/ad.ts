@@ -119,4 +119,7 @@ export class UpdateAdInput {
 
   @Field(() => [ObjectId], { nullable: true })
   tags?: ObjectId[];
+
+  @Field({ nullable: true })
+  location?: string;
 }

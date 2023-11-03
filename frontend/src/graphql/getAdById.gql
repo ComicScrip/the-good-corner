@@ -7,5 +7,8 @@ query GetAdById($adId: Int!) {
     location
     owner
     description
+    category {
+      id
+    }
   }
 }
