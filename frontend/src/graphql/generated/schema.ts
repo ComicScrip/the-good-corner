@@ -187,7 +187,7 @@ export type CreateCategoryMutationVariables = Exact<{
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: number } };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'Category', id: number, name: string } };
 
 export type CreateTagMutationVariables = Exact<{
   data: NewTagInput;
@@ -310,6 +310,7 @@ export const CreateCategoryDocument = gql`
     mutation createCategory($data: NewCategoryInput!) {
   createCategory(data: $data) {
     id
+    name
   }
 }
     `;
