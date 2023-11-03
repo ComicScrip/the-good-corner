@@ -6,7 +6,10 @@ import { MapPinIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useGetAdByIdQuery } from "@/graphql/generated/schema";
+import {
+  useDeleteAdMutation,
+  useGetAdByIdQuery,
+} from "@/graphql/generated/schema";
 
 export type AdDetail = {
   id: number;
@@ -17,6 +20,7 @@ export type AdDetail = {
 
 export default function AdDetails() {
   const router = useRouter();
+  const [deleteAd] = useDeleteAdMutation();
   const { adId } = router.query;
 
   const { data } = useGetAdByIdQuery({
@@ -70,11 +74,8 @@ export default function AdDetails() {
                         "Etes-vous certain.e de vouloir supprimer cette annonce ?"
                       )
                     )
-                      axios
-                        .delete(`http://localhost:4000/ads/${ad.id}`)
-                        .then(() => {
-                          router.push("/");
-                        })
+                      deleteAd({ variables: { adId: ad.id } })
+                        .then(() => router.push("/"))
                         .catch(console.error);
                   }}
                 >

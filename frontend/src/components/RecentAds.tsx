@@ -17,17 +17,6 @@ export default function RecentAds() {
 
   const ads = data?.ads || [];
 
-  /*
-  const [ads, setAds] = useState<Ad[]>([]);
-
-  useEffect(() => {
-    axios
-      .get<Ad[]>("http://localhost:4000/ads")
-      .then((res) => setAds(res.data))
-      .catch(console.error);
-  }, []);
-  */
-
   return (
     <div className="pt-6">
       <h2 className="text-2xl mb-6">Annonces récentes</h2>

@@ -1,23 +1,32 @@
 import AdminCategoryRow from "@/components/admin/AdminCategoryRow";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Category } from "@/types";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import {
+  CategoriesDocument,
+  CategoriesQuery,
+  Category,
+  useCategoriesQuery,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+} from "@/graphql/generated/schema";
+import { useApolloClient } from "@apollo/client";
 
 export default function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    axios
-      .get<Category[]>("http://localhost:4000/categories")
-      .then((res) => setCategories(res.data))
-      .catch(console.error);
-  }, []);
+  const { data, refetch } = useCategoriesQuery();
+  const categories = data?.categories || [];
+  const [deleteCategory] = useDeleteCategoryMutation();
+  const [createCategory] = useCreateCategoryMutation();
+  const client = useApolloClient();
 
   const handleDeleteCategory = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:4000/categories/${id}`);
-      setCategories((catList) => catList?.filter((c) => c.id !== id));
+      await deleteCategory({ variables: { categoryId: id } });
+      client.writeQuery<CategoriesQuery>({
+        query: CategoriesDocument,
+        data: {
+          categories: categories.filter((cat) => cat.id !== id),
+        },
+      });
+      //refetch();
     } catch (e) {
       console.error(e);
     }
@@ -33,11 +42,18 @@ export default function AdminCategories() {
           const json = Object.fromEntries(data.entries());
 
           try {
-            const newCat = (
-              await axios.post("http://localhost:4000/categories", json)
-            ).data;
+            const res = await createCategory({
+              variables: { data: json as any },
+            });
+
+            if (res.data?.createCategory)
+              client.writeQuery<CategoriesQuery>({
+                query: CategoriesDocument,
+                data: {
+                  categories: [{ ...res.data?.createCategory }, ...categories],
+                },
+              });
             form.reset();
-            setCategories((oldList) => [newCat, ...oldList]);
           } catch (err) {
             console.error(err);
           }
