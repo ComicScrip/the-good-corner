@@ -5,6 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node-dev src/index.ts",
+    "build": "tsc",
+    "start:prod": "node build/index.js",
     "resetDB": "ts-node-dev src/resetDb.ts"
   },
   "repository": {
