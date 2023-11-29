@@ -15,16 +15,17 @@ app.use("/files/*", serveStatic({ root: "." }));
 app.post("/uploads", async (c) => {
   const { file }: { file: File } = await c.req.parseBody();
   const path = "files/" + Date.now() + "-" + file.name;
-  try {
-    console.log("writing");
-    await Bun.write(path, file);
-  } catch (err) {
-    console.error(err);
-  }
+  await Bun.write(path, file);
+
   return c.json({ path, url: c.req.url.replace("uploads", path) });
 });
 
 console.log("server ready");
+
+process.on("SIGINT", () => {
+  console.log("Exiting...");
+  process.exit();
+});
 
 export default {
   port: process.env.PORT || 8000,
