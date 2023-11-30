@@ -1,7 +1,10 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+
+app.use("/*", cors());
 
 app.get("/", (c) =>
   c.html(
