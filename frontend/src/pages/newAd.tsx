@@ -13,6 +13,7 @@ export default function NewAd() {
   const { data } = useCategoriesQuery();
   const categories = data?.categories || [];
   const router = useRouter();
+  const [imagePreviewURL, setImagePreviewURL] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,11 +51,35 @@ export default function NewAd() {
             <input
               type="text"
               name="picture"
+              value={imagePreviewURL}
+              onChange={(e) => setImagePreviewURL(e.target.value)}
               id="picture"
               required
               placeholder="https://imageshack.com/zoot.png"
               className="input input-bordered w-full max-w-xs"
             />
+            <input
+              type="file"
+              onChange={(e) => {
+                console.log(e.target.files);
+
+                const imageToUpload = e.target.files?.[0];
+                if (imageToUpload) {
+                  const form = new FormData();
+                  form.append("file", imageToUpload);
+
+                  axios
+                    .post("http://localhost:8000/uploads", form)
+                    .then((res) => {
+                      console.log(res.data);
+                      setImagePreviewURL(res.data.url);
+                    });
+                }
+              }}
+            />
+            {imagePreviewURL && (
+              <img src={imagePreviewURL} alt="picture of the add" />
+            )}
           </div>
         </div>
 
