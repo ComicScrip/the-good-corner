@@ -9,12 +9,15 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    ports:
+      - 5432:5432
 
   backend:
     depends_on:
       db:
         condition: service_healthy
-
+    env_file:
+      - backend/.env
     build: backend
     ports:
       - 4001:4001
@@ -32,6 +35,8 @@ services:
     build: frontend
     ports:
       - 3000:3000
+    env_file:
+      - frontend/.env
     volumes:
       - ./frontend/src:/app/src
     

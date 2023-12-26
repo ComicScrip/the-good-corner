@@ -119,6 +119,9 @@ async function main() {
   await porsche.save();
   await raquette.save();
   await skis.save();
+
+  await db.destroy();
+  console.log("done !");
 }
 
 main();

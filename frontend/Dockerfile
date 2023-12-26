@@ -13,6 +13,9 @@ COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./postcss.config.js ./postcss.config.js
 COPY ./src ./src
 
+ARG NEXT_PUBLIC_GRAPHQL_API_URL
+ENV NEXT_PUBLIC_GRAPHQL_API_URL ${NEXT_PUBLIC_GRAPHQL_API_URL}
+
 CMD npm run dev
 
 

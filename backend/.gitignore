@@ -1,3 +1,4 @@
 node_modules
 build
 the_good_corner.sqlite
+.env
