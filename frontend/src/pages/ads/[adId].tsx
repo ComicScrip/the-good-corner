@@ -48,7 +48,7 @@ export default function AdDetails() {
               <div className="flex justify-between mb-6">
                 <div className="flex items-center mt-3">
                   <UserCircleIcon width={24} height={24} className="mr-2" />{" "}
-                  {ad.owner}
+                  {ad.owner.nickname}
                 </div>
 
                 <div className="flex items-center mt-2 ">

@@ -1,7 +1,14 @@
 import { argon2id, hash, verify } from "argon2";
-import { IsEmail, Matches, MinLength } from "class-validator";
+import { IsEmail, IsUrl, Matches, MinLength } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Ad } from "./ad";
 
 export type Role = "visitor" | "admin";
 
@@ -23,13 +30,39 @@ class User extends BaseEntity {
   @Column({ enum: ["visitor", "admin"], default: "visitor" })
   role: Role;
 
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  expoNotificationToken?: string;
+  @Field()
+  @Column({
+    default:
+      "https://static-00.iconduck.com/assets.00/user-avatar-icon-512x512-vufpcmdn.png",
+  })
+  avatar: string;
+
+  @Field()
+  @Column()
+  nickname: string;
+
+  @ManyToMany(() => Ad, (ad) => ad.owner)
+  ads: Ad[];
 }
 
 @InputType()
 export class UserInput {
+  @Field()
+  @IsEmail()
+  email: string;
+
+  @Field()
+  @MinLength(8)
+  @Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
+  password: string;
+
+  @Field()
+  @MinLength(3)
+  nickname: string;
+}
+
+@InputType()
+export class UserLoginInput {
   @Field()
   @IsEmail()
   email: string;
@@ -45,6 +78,21 @@ export class UpdateUserInput {
   @Field({ nullable: true })
   @IsEmail()
   email?: string;
+
+  @Field({ nullable: true })
+  @MinLength(8)
+  @Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
+  password?: string;
+
+  @Field()
+  @MinLength(3)
+  @Field({ nullable: true })
+  nickname?: string;
+
+  @Field({ nullable: true })
+  @MinLength(3)
+  @IsUrl()
+  avatar?: string;
 }
 
 // https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html

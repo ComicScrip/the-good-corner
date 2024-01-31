@@ -5,6 +5,7 @@ import User, {
   hashPassword,
   UpdateUserInput,
   UserInput,
+  UserLoginInput,
   verifyPassword,
 } from "../entities/user";
 import { ContextType } from "../types";
@@ -28,7 +29,7 @@ class UserResolver {
 
   @Mutation(() => String)
   async login(
-    @Arg("data") { email, password }: UserInput,
+    @Arg("data") { password, email }: UserLoginInput,
     @Ctx() ctx: ContextType
   ): Promise<string> {
     const user = await datasource
@@ -73,9 +74,22 @@ class UserResolver {
     @Ctx() { currentUser }: ContextType
   ): Promise<User> {
     if (typeof currentUser === "undefined") throw new Error("no current user");
-    return await datasource
-      .getRepository(User)
-      .save({ ...currentUser, ...data });
+
+    const exisitingUser = await User.findOneBy({ email: data.email || "" });
+    console.log({ data, exisitingUser });
+
+    if (exisitingUser !== null && exisitingUser.email !== currentUser.email)
+      throw new Error("EMAIL_ALREADY_EXISTS");
+
+    if (data.email) currentUser.email = data.email;
+    if (data.password)
+      currentUser.hashedPassword = data.password
+        ? await hashPassword(data.password)
+        : undefined;
+    if (data.avatar) currentUser.avatar = data.avatar;
+    if (data.nickname) currentUser.nickname = data.nickname;
+
+    return await currentUser.save();
   }
 }
 

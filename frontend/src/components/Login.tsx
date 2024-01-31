@@ -3,6 +3,7 @@ import {
   useLogoutMutation,
   useProfileQuery,
 } from "@/graphql/generated/schema";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 
 export default function Login() {
@@ -45,38 +46,48 @@ export default function Login() {
       </button>
     </div>
   ) : (
-    <form className="pt-6" onSubmit={handleSubmit}>
-      <h2 className="text-2xl mb-6">Login</h2>
-
-      <div className="form-control w-full max-w-xs">
-        <label className="label" htmlFor="email">
-          <span className="label-text">Email</span>
-        </label>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          required
-          className="input input-bordered w-full max-w-xs"
-        />
+    <>
+      <div className="pt-16">
+        <p>Pas encore inscrit ?</p>
+        <Link href="/signup">
+          <button className="btn btn-primary text-white mt-12 w-full">
+            S'inscrire
+          </button>
+        </Link>
       </div>
+      <form className="pt-6" onSubmit={handleSubmit}>
+        <h2 className="text-2xl mb-6">Se connecter</h2>
 
-      <div className="form-control w-full max-w-xs">
-        <label className="label" htmlFor="password">
-          <span className="label-text">Password</span>
-        </label>
-        <input
-          type="password"
-          name="password"
-          id="password"
-          required
-          className="input input-bordered w-full max-w-xs"
-        />
-      </div>
-      {error && <p className="text-red-500">{error}</p>}
-      <button className="btn btn-primary text-white mt-12 w-full">
-        Se Connecter
-      </button>
-    </form>
+        <div className="form-control w-full max-w-xs">
+          <label className="label" htmlFor="email">
+            <span className="label-text">Email</span>
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            required
+            className="input input-bordered w-full max-w-xs"
+          />
+        </div>
+
+        <div className="form-control w-full max-w-xs">
+          <label className="label" htmlFor="password">
+            <span className="label-text">Password</span>
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            required
+            className="input input-bordered w-full max-w-xs"
+          />
+        </div>
+        {error && <p className="text-red-500">{error}</p>}
+        <button className="btn btn-primary text-white mt-12 w-full">
+          Se Connecter
+        </button>
+      </form>
+    </>
   );
 }
