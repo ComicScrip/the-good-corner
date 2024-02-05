@@ -4,7 +4,7 @@
   "description": "### Install dependencies",
   "main": "index.js",
   "scripts": {
-    "dev": "docker compose up",
+    "dev": "docker compose up --build",
     "prod": "docker compose -f docker-compose.production.yml up --build"
   },
   "author": "",
