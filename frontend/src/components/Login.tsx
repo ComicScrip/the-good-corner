@@ -4,6 +4,7 @@ import {
   useProfileQuery,
 } from "@/graphql/generated/schema";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
 
 export default function Login() {
@@ -14,6 +15,8 @@ export default function Login() {
     errorPolicy: "ignore",
   });
   const [logout] = useLogoutMutation();
+  const router = useRouter();
+  const { redirectURLAfterLogin } = router.query;
   const isLoggedIn = !!currentUser?.profile;
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -23,6 +26,7 @@ export default function Login() {
     setError("");
     try {
       await login({ variables: { data: { ...formJSON } } });
+      if (redirectURLAfterLogin) router.push(redirectURLAfterLogin as string);
     } catch (err) {
       setError("invalid credentials");
     } finally {
@@ -47,14 +51,6 @@ export default function Login() {
     </div>
   ) : (
     <>
-      <div className="pt-16">
-        <p>Pas encore inscrit ?</p>
-        <Link href="/signup">
-          <button className="btn btn-primary text-white mt-12 w-full">
-            S'inscrire
-          </button>
-        </Link>
-      </div>
       <form className="pt-6" onSubmit={handleSubmit}>
         <h2 className="text-2xl mb-6">Se connecter</h2>
 
@@ -88,6 +84,15 @@ export default function Login() {
           Se Connecter
         </button>
       </form>
+      <div className="pt-16">
+        <h2 className="text-2xl">Pas encore de compte ?</h2>
+
+        <Link href="/signup">
+          <button className="btn btn-info text-white mt-12 w-full">
+            S'inscrire
+          </button>
+        </Link>
+      </div>
     </>
   );
 }

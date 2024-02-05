@@ -1,15 +1,13 @@
 import Layout from "@/components/Layout";
-import { Category } from "@/types";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import axios from "axios";
+import { FormEvent } from "react";
 
 import {
+  GetAdByIdDocument,
   useCategoriesQuery,
   useGetAdByIdQuery,
   useUpdateAdMutation,
 } from "@/graphql/generated/schema";
-import { useQuery } from "@apollo/client";
 
 export default function EditAd() {
   const router = useRouter();
@@ -31,12 +29,14 @@ export default function EditAd() {
     const formJSON: any = Object.fromEntries(formData.entries());
     formJSON.price = parseFloat(formJSON.price);
     formJSON.category = { id: parseInt(formJSON.category, 10) };
-
+    const id = typeof adId === "string" ? parseInt(adId, 10) : 0;
     updateAd({
       variables: {
-        adId: typeof adId === "string" ? parseInt(adId, 10) : 0,
+        adId: id,
         data: formJSON as any,
       },
+      refetchQueries: [{ query: GetAdByIdDocument, variables: { adId: id } }],
+      awaitRefetchQueries: true,
     })
       .then((res) => router.push(`/ads/${res.data?.updateAd.id}`))
       .catch(console.error);
@@ -90,21 +90,6 @@ export default function EditAd() {
                 id="location"
                 required
                 placeholder="Paris"
-                className="input input-bordered w-full max-w-xs"
-              />
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label" htmlFor="owner">
-                <span className="label-text">Auteur</span>
-              </label>
-              <input
-                type="text"
-                name="owner"
-                defaultValue={ad?.owner}
-                id="owner"
-                required
-                placeholder="Link"
                 className="input input-bordered w-full max-w-xs"
               />
             </div>

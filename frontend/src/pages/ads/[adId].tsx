@@ -64,7 +64,7 @@ export default function AdDetails() {
                 </div>
               </div>
 
-              {!canEdit && (
+              {canEdit && (
                 <div className="flex justify-between border-t pt-2 items-center ">
                   <Link
                     href={`/editAd/${ad.id}`}

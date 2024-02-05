@@ -73,6 +73,7 @@ class AdsResolver {
     });
   }
 
+  @Authorized()
   @Mutation(() => Ad)
   async updateAd(
     @Arg("adId") id: number,

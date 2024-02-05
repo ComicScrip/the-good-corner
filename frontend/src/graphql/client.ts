@@ -1,5 +1,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
+import { error } from "console";
+import { LogoutDocument } from "./generated/schema";
 
 //https://www.apollographql.com/docs/react/networking/authentication/#cookie
 const httpLink = new HttpLink({
@@ -14,7 +16,21 @@ const logoutLink = onError((err) => {
     err?.operation?.operationName !== "Profile" &&
     !window.location.pathname.includes("/login")
   ) {
-    window.location.href = "/login";
+    if (errorCode === "UNAUTHENTICATED") {
+      alert(
+        "Vous n'etes pas connecté ou votre session a expiré. Merci de vous reconnecter."
+      );
+      window.location.href = `/login?redirectURLAfterLogin=${window.location.href}`;
+    } else if (errorCode === "UNAUTHORIZED") {
+      alert(
+        "Vous n'avez pas les permissions nécéssaires pour consulter cette partie du site ou effectuer cette action. Vous allez etre déconnecté. Merci de vous reconnecter avec un compte possédant les permissions adéquates."
+      );
+
+      client.mutate({ mutation: LogoutDocument }).then(() => {
+        client.resetStore();
+        window.location.href = `/login?redirectURLAfterLogin=${window.location.href}`;
+      });
+    }
   }
 });
 

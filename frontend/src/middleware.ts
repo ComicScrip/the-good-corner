@@ -43,5 +43,5 @@ async function checkToken(token: string | undefined, request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/newAd", "/profile"],
+  matcher: ["/admin/:path*", "/newAd", "/profile", "/editAd/:path*"],
 };
