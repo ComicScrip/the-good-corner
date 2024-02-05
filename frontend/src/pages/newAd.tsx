@@ -50,8 +50,6 @@ export default function NewAd() {
               <span className="label-text">Image</span>
             </label>
             <input
-              value={imagePreviewURL}
-              onChange={(e) => setImagePreviewURL(e.target.value)}
               type="text"
               name="picture"
               value={imagePreviewURL}
