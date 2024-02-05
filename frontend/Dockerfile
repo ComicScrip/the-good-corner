@@ -6,15 +6,13 @@ COPY package*.json ./
 
 RUN npm i
 
+COPY ./.env ./.env
 COPY ./tsconfig.json ./tsconfig.json
 COPY ./next-env.d.ts ./next-env.d.ts
 COPY ./next.config.js ./next.config.js
 COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./postcss.config.js ./postcss.config.js
 COPY ./src ./src
-
-ARG NEXT_PUBLIC_GRAPHQL_API_URL
-ENV NEXT_PUBLIC_GRAPHQL_API_URL ${NEXT_PUBLIC_GRAPHQL_API_URL}
 
 CMD npm run dev
 

@@ -62,7 +62,7 @@ export default function Profile() {
   return (
     <>
       <p className="pt-6">
-        Vous etes connecté avec le compte {currentUser.profile.nickname}
+        Vous êtes connecté avec le compte {currentUser.profile.nickname}
       </p>
 
       <button

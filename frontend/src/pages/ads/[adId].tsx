@@ -88,7 +88,7 @@ export default function AdDetails() {
                     onClick={() => {
                       if (
                         confirm(
-                          "Etes-vous certain.e de vouloir supprimer cette annonce ?"
+                          "Êtes-vous certain.e de vouloir supprimer cette annonce ?"
                         )
                       )
                         deleteAd({ variables: { adId: ad.id } })

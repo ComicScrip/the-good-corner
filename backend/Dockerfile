@@ -10,6 +10,7 @@ COPY package*.json ./
 
 RUN npm i
 
+COPY ./.env ./.env
 COPY ./tsconfig.json ./tsconfig.json
 COPY ./src ./src
 

@@ -1,12 +1,10 @@
-import { Tag } from "@/types";
 import { useState } from "react";
 
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { XCircleIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
-import { useUpdateTagMutation } from "@/graphql/generated/schema";
+import { Tag, useUpdateTagMutation } from "@/graphql/generated/schema";
 
 interface AdminTagRowProps {
   tag: Tag;

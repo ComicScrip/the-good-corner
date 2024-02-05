@@ -18,7 +18,7 @@ const logoutLink = onError((err) => {
   ) {
     if (errorCode === "UNAUTHENTICATED") {
       alert(
-        "Vous n'etes pas connecté ou votre session a expiré. Merci de vous reconnecter."
+        "Vous n'êtes pas connecté ou votre session a expiré. Merci de vous reconnecter."
       );
       window.location.href = `/login?redirectURLAfterLogin=${window.location.href}`;
     } else if (errorCode === "UNAUTHORIZED") {

@@ -1,15 +1,7 @@
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Ad, Category } from "@/types";
 import AdCard from "@/components/AdCard";
-import queryString from "query-string";
-import {
-  useAdsQuery,
-  useCreateAdMutation,
-  useSearchAdsQuery,
-} from "@/graphql/generated/schema";
+import { useSearchAdsQuery } from "@/graphql/generated/schema";
 
 export default function Search() {
   const router = useRouter();
