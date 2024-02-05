@@ -28,7 +28,7 @@ services:
     build: file-upload-service
     ports:
       - 8000:8000
-    volumes: 
+    volumes:
       - ./file-upload-service/files:/app/files
 
   frontend:

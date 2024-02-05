@@ -52,6 +52,8 @@ export default function NewAd() {
               onChange={(e) => setImagePreviewURL(e.target.value)}
               type="text"
               name="picture"
+              value={imagePreviewURL}
+              onChange={(e) => setImagePreviewURL(e.target.value)}
               id="picture"
               required
               placeholder="https://imageshack.com/zoot.png"
