@@ -28,7 +28,7 @@ export default function Signup() {
           data: { email: formJSON.email, password: formJSON.password },
         },
       });
-      router.push("/");
+      router.push("/me");
     } catch (err) {
       setError("could not create account");
     } finally {

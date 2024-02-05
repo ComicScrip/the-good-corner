@@ -18,10 +18,7 @@ class UserResolver {
   @Mutation(() => User)
   async createUser(@Arg("data") data: UserInput): Promise<User> {
     const exisitingUser = await User.findOne({ where: { email: data.email } });
-    console.log("user");
-
     if (exisitingUser !== null) throw new Error("EMAIL_ALREADY_EXISTS");
-
     const hashedPassword = await hashPassword(data.password);
     return await datasource
       .getRepository(User)
@@ -77,7 +74,6 @@ class UserResolver {
     if (typeof currentUser === "undefined") throw unauthenticatedError();
 
     const exisitingUser = await User.findOneBy({ email: data.email || "" });
-    console.log({ data, exisitingUser });
 
     if (exisitingUser !== null && exisitingUser.email !== currentUser.email)
       throw new Error("EMAIL_ALREADY_EXISTS");

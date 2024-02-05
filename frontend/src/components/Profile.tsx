@@ -1,12 +1,15 @@
 import {
-  useLoginMutation,
   useLogoutMutation,
   useProfileQuery,
+  useSearchAdsQuery,
   useUpdateProfileMutation,
 } from "@/graphql/generated/schema";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { FormEvent, useEffect, useState } from "react";
+import AdCard from "./AdCard";
+import uploadImage from "@/uploadImage";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
 export default function Profile() {
   const router = useRouter();
@@ -18,6 +21,13 @@ export default function Profile() {
       router.push("/login");
     },
   });
+
+  const { data: currentUserAds } = useSearchAdsQuery({
+    variables: { ownerId: currentUser?.profile.id },
+    skip: !currentUser?.profile,
+    fetchPolicy: "cache-and-network",
+  });
+
   const [logout] = useLogoutMutation();
 
   useEffect(() => {
@@ -34,6 +44,7 @@ export default function Profile() {
     setError("");
     try {
       await updateProfile({ variables: { data: { ...formJSON } } });
+      toast.success("Profil mis à jour");
     } catch (err) {
       setError("Une erreur est survenue");
     } finally {
@@ -50,8 +61,19 @@ export default function Profile() {
 
   return (
     <>
+      <p className="pt-6">
+        Vous etes connecté avec le compte {currentUser.profile.nickname}
+      </p>
+
+      <button
+        className="btn btn-error text-white mt-4 w-full"
+        onClick={handleLogout}
+      >
+        Se Déconnecter
+      </button>
+
       <form className="pt-6" onSubmit={handleSubmit}>
-        <h2 className="text-2xl mb-6">Profil</h2>
+        <h2 className="text-2xl mb-6">Mon Profil</h2>
 
         {imagePreviewURL && (
           <img
@@ -79,19 +101,11 @@ export default function Profile() {
         <input
           accept="image/*"
           type="file"
-          onChange={(e) => {
-            console.log(e.target.files?.[0]);
-            const form = new FormData();
+          onChange={async (e) => {
             const file = e.target.files?.[0];
-
             if (file) {
-              form.append("file", file);
-              axios
-                .post("http://localhost:8000/uploads", form)
-                .then((res) => {
-                  setImagePreviewURL(res.data.url);
-                })
-                .catch(console.error);
+              const res = await uploadImage(file);
+              if (res) setImagePreviewURL(res.data.url);
             }
           }}
         />
@@ -145,12 +159,19 @@ export default function Profile() {
           Enregistrer
         </button>
       </form>
-      <button
-        className="btn btn-error text-white mt-12 w-full"
-        onClick={handleLogout}
-      >
-        Se Déconnecter
-      </button>
+
+      <h2 className="text-2xl mb-6 mt-10">Mes annonces</h2>
+
+      <Link href="/newAd" className="button link-button mb-6">
+        <span className="mobile-short-label">Publier</span>
+        <span className="desktop-long-label">Publier une annonce</span>
+      </Link>
+
+      <section className="flex flex-wrap pb-24">
+        {currentUserAds?.ads.map((ad) => (
+          <AdCard key={ad.id} ad={ad} link={`/ads/${ad.id}`} />
+        ))}
+      </section>
     </>
   );
 }

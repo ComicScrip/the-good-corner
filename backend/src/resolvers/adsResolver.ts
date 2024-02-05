@@ -25,10 +25,9 @@ class AdsResolver {
   async ads(
     @Arg("tagsId", { nullable: true }) tagIds?: string,
     @Arg("categoryId", () => Int, { nullable: true }) categoryId?: number,
+    @Arg("ownerId", () => Int, { nullable: true }) ownerId?: number,
     @Arg("title", { nullable: true }) title?: string
   ) {
-    console.log({ title });
-
     return Ad.find({
       relations: { category: true, tags: true },
       where: {
@@ -41,6 +40,9 @@ class AdsResolver {
         title: title ? ILike(`%${title}%`) : undefined,
         category: {
           id: categoryId,
+        },
+        owner: {
+          id: ownerId,
         },
       },
     });

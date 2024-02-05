@@ -6,6 +6,7 @@ import {
   useCategoriesQuery,
   useCreateAdMutation,
 } from "@/graphql/generated/schema";
+import uploadImage from "@/uploadImage";
 
 export default function NewAd() {
   const [createAd] = useCreateAdMutation();
@@ -37,6 +38,7 @@ export default function NewAd() {
             <input
               required
               type="text"
+              minLength={5}
               name="title"
               id="title"
               placeholder="Zelda : Ocarina of time"
@@ -62,19 +64,11 @@ export default function NewAd() {
             <input
               accept="image/*"
               type="file"
-              onChange={(e) => {
-                console.log(e.target.files?.[0]);
-                const form = new FormData();
+              onChange={async (e) => {
                 const file = e.target.files?.[0];
-
                 if (file) {
-                  form.append("file", file);
-                  axios
-                    .post("http://localhost:8000/uploads", form)
-                    .then((res) => {
-                      setImagePreviewURL(res.data.url);
-                    })
-                    .catch(console.error);
+                  const res = await uploadImage(file);
+                  if (res) setImagePreviewURL(res.data.url);
                 }
               }}
             />

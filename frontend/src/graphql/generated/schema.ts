@@ -149,6 +149,7 @@ export type Query = {
 
 export type QueryAdsArgs = {
   categoryId?: InputMaybe<Scalars['Int']>;
+  ownerId?: InputMaybe<Scalars['Int']>;
   tagsId?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
 };
@@ -304,6 +305,7 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: string };
 export type SearchAdsQueryVariables = Exact<{
   title?: InputMaybe<Scalars['String']>;
   categoryId?: InputMaybe<Scalars['Int']>;
+  ownerId?: InputMaybe<Scalars['Int']>;
   tagsId?: InputMaybe<Scalars['String']>;
 }>;
 
@@ -797,8 +799,8 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const SearchAdsDocument = gql`
-    query SearchAds($title: String, $categoryId: Int, $tagsId: String) {
-  ads(title: $title, categoryId: $categoryId, tagsId: $tagsId) {
+    query SearchAds($title: String, $categoryId: Int, $ownerId: Int, $tagsId: String) {
+  ads(title: $title, categoryId: $categoryId, ownerId: $ownerId, tagsId: $tagsId) {
     id
     picture
     price
@@ -821,6 +823,7 @@ export const SearchAdsDocument = gql`
  *   variables: {
  *      title: // value for 'title'
  *      categoryId: // value for 'categoryId'
+ *      ownerId: // value for 'ownerId'
  *      tagsId: // value for 'tagsId'
  *   },
  * });

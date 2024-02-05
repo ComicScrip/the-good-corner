@@ -6,6 +6,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FormEvent, useState } from "react";
+import Profile from "./Profile";
 
 export default function Login() {
   const [error, setError] = useState("");
@@ -40,15 +41,7 @@ export default function Login() {
   };
 
   return isLoggedIn ? (
-    <div className="pt-6">
-      connected as {currentUser.profile.email}
-      <button
-        className="btn btn-primary text-white mt-12 w-full"
-        onClick={handleLogout}
-      >
-        Se Déconnecter
-      </button>
-    </div>
+    <Profile />
   ) : (
     <>
       <form className="pt-6" onSubmit={handleSubmit}>
