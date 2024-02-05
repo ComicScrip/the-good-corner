@@ -12,6 +12,7 @@ query GetAdById($adId: Int!) {
     owner {
       avatar
       nickname
+      id
     }
   }
 }

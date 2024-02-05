@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
-import { Category } from "@/types";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import {
@@ -92,20 +91,6 @@ export default function NewAd() {
               id="location"
               required
               placeholder="Paris"
-              className="input input-bordered w-full max-w-xs"
-            />
-          </div>
-
-          <div className="form-control w-full max-w-xs">
-            <label className="label" htmlFor="owner">
-              <span className="label-text">Auteur</span>
-            </label>
-            <input
-              type="text"
-              name="owner"
-              id="owner"
-              required
-              placeholder="Link"
               className="input input-bordered w-full max-w-xs"
             />
           </div>

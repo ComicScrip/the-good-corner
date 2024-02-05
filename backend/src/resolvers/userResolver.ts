@@ -11,6 +11,7 @@ import User, {
 import { ContextType } from "../types";
 import jwt from "jsonwebtoken";
 import env from "../env";
+import { unauthenticatedError } from "../utils";
 
 @Resolver(User)
 class UserResolver {
@@ -73,7 +74,7 @@ class UserResolver {
     @Arg("data") data: UpdateUserInput,
     @Ctx() { currentUser }: ContextType
   ): Promise<User> {
-    if (typeof currentUser === "undefined") throw new Error("no current user");
+    if (typeof currentUser === "undefined") throw unauthenticatedError();
 
     const exisitingUser = await User.findOneBy({ email: data.email || "" });
     console.log({ data, exisitingUser });

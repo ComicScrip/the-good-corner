@@ -13,7 +13,6 @@ import AdsResolver from "./resolvers/adsResolver";
 import TagsResolver from "./resolvers/tagsResolver";
 import CategoriesResolver from "./resolvers/categoriesResolver";
 import UserResolver from "./resolvers/userResolver";
-import { ContextType } from "./types";
 
 const { SERVER_PORT: port, CORS_ALLOWED_ORIGINS: allowedOrigins } = env;
 

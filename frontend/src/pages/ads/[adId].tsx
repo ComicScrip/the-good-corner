@@ -9,6 +9,7 @@ import Link from "next/link";
 import {
   useDeleteAdMutation,
   useGetAdByIdQuery,
+  useProfileQuery,
 } from "@/graphql/generated/schema";
 
 export type AdDetail = {
@@ -30,6 +31,12 @@ export default function AdDetails() {
 
   const ad = data?.getAdById;
 
+  const { data: currentUser } = useProfileQuery();
+
+  const canEdit =
+    currentUser?.profile.role === "admin" ||
+    currentUser?.profile.id === ad?.owner.id;
+
   return (
     <Layout title={ad?.title ? ad.title + " - TGC" : "The Good Corner"}>
       <div className="pt-12 pb-12">
@@ -45,7 +52,7 @@ export default function AdDetails() {
 
               <img src={ad.picture} alt={ad.title} className="mt-6 mb-6" />
               <p className="mt-6 mb-6">{ad.description}</p>
-              <div className="flex justify-between mb-6">
+              <div className="flex justify-between mb-2">
                 <div className="flex items-center mt-3">
                   <UserCircleIcon width={24} height={24} className="mr-2" />{" "}
                   {ad.owner.nickname}
@@ -57,32 +64,34 @@ export default function AdDetails() {
                 </div>
               </div>
 
-              <div className="flex justify-between border-t pt-2 items-center ">
-                <Link
-                  href={`/editAd/${ad.id}`}
-                  className="flex items-center mt-3 cursor-pointer"
-                >
-                  <PencilSquareIcon width={24} height={24} className="mr-2" />
-                  Editer l'annonce
-                </Link>
+              {!canEdit && (
+                <div className="flex justify-between border-t pt-2 items-center ">
+                  <Link
+                    href={`/editAd/${ad.id}`}
+                    className="flex items-center mt-3 cursor-pointer"
+                  >
+                    <PencilSquareIcon width={24} height={24} className="mr-2" />
+                    Editer l'annonce
+                  </Link>
 
-                <div
-                  className="flex items-center mt-3 cursor-pointer"
-                  onClick={() => {
-                    if (
-                      confirm(
-                        "Etes-vous certain.e de vouloir supprimer cette annonce ?"
+                  <div
+                    className="flex items-center mt-3 cursor-pointer"
+                    onClick={() => {
+                      if (
+                        confirm(
+                          "Etes-vous certain.e de vouloir supprimer cette annonce ?"
+                        )
                       )
-                    )
-                      deleteAd({ variables: { adId: ad.id } })
-                        .then(() => router.push("/"))
-                        .catch(console.error);
-                  }}
-                >
-                  <TrashIcon width={24} height={24} className="mr-2" />
-                  Supprimer l'annonce
+                        deleteAd({ variables: { adId: ad.id } })
+                          .then(() => router.push("/"))
+                          .catch(console.error);
+                    }}
+                  >
+                    <TrashIcon width={24} height={24} className="mr-2" />
+                    Supprimer l'annonce
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>

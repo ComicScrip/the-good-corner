@@ -6,6 +6,7 @@ import {
   Column,
   Entity,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Ad } from "./ad";
@@ -41,7 +42,7 @@ class User extends BaseEntity {
   @Column()
   nickname: string;
 
-  @ManyToMany(() => Ad, (ad) => ad.owner)
+  @ManyToOne(() => Ad, (ad) => ad.owner)
   ads: Ad[];
 }
 

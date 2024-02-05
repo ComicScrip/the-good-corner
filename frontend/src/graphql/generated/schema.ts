@@ -267,7 +267,7 @@ export type GetAdByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetAdByIdQuery = { __typename?: 'Query', getAdById: { __typename?: 'Ad', id: number, title: string, price: number, picture: string, location: string, description: string, category: { __typename?: 'Category', id: number }, owner: { __typename?: 'User', avatar: string, nickname: string } } };
+export type GetAdByIdQuery = { __typename?: 'Query', getAdById: { __typename?: 'Ad', id: number, title: string, price: number, picture: string, location: string, description: string, category: { __typename?: 'Category', id: number }, owner: { __typename?: 'User', avatar: string, nickname: string, id: number } } };
 
 export type CategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -557,6 +557,7 @@ export const GetAdByIdDocument = gql`
     owner {
       avatar
       nickname
+      id
     }
   }
 }
