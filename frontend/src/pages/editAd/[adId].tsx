@@ -1,15 +1,14 @@
 import Layout from "@/components/Layout";
-import { Category } from "@/types";
 import { useRouter } from "next/router";
-import { FormEvent, useEffect, useState } from "react";
-import axios from "axios";
+import { FormEvent, useState } from "react";
 
 import {
+  GetAdByIdDocument,
   useCategoriesQuery,
   useGetAdByIdQuery,
   useUpdateAdMutation,
 } from "@/graphql/generated/schema";
-import { useQuery } from "@apollo/client";
+import uploadImage from "@/uploadImage";
 
 export default function EditAd() {
   const router = useRouter();
@@ -31,16 +30,22 @@ export default function EditAd() {
     const formJSON: any = Object.fromEntries(formData.entries());
     formJSON.price = parseFloat(formJSON.price);
     formJSON.category = { id: parseInt(formJSON.category, 10) };
+    formJSON.picture = formJSON.picture || imagePreviewURL;
 
+    const id = typeof adId === "string" ? parseInt(adId, 10) : 0;
     updateAd({
       variables: {
-        adId: typeof adId === "string" ? parseInt(adId, 10) : 0,
+        adId: id,
         data: formJSON as any,
       },
+      refetchQueries: [{ query: GetAdByIdDocument, variables: { adId: id } }],
+      awaitRefetchQueries: true,
     })
       .then((res) => router.push(`/ads/${res.data?.updateAd.id}`))
       .catch(console.error);
   };
+
+  const [imagePreviewURL, setImagePreviewURL] = useState("");
 
   return (
     <Layout title={ad?.title ? ad.title + " - TGC" : "The Good Corner"}>
@@ -67,7 +72,8 @@ export default function EditAd() {
                 <span className="label-text">Image</span>
               </label>
               <input
-                defaultValue={ad?.picture}
+                value={imagePreviewURL || ad?.picture}
+                onChange={(e) => setImagePreviewURL(e.target.value)}
                 type="text"
                 name="picture"
                 id="picture"
@@ -75,6 +81,18 @@ export default function EditAd() {
                 placeholder="https://imageshack.com/zoot.png"
                 className="input input-bordered w-full max-w-xs"
               />
+              <input
+                accept="image/*"
+                type="file"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const res = await uploadImage(file);
+                    if (res) setImagePreviewURL(res.data.url);
+                  }
+                }}
+              />
+              <img src={imagePreviewURL || ad?.picture} alt="picture" />
             </div>
           </div>
 
@@ -90,21 +108,6 @@ export default function EditAd() {
                 id="location"
                 required
                 placeholder="Paris"
-                className="input input-bordered w-full max-w-xs"
-              />
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label" htmlFor="owner">
-                <span className="label-text">Auteur</span>
-              </label>
-              <input
-                type="text"
-                name="owner"
-                defaultValue={ad?.owner}
-                id="owner"
-                required
-                placeholder="Link"
                 className="input input-bordered w-full max-w-xs"
               />
             </div>

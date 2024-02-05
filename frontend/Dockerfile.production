@@ -6,6 +6,7 @@ COPY package*.json ./
 
 RUN npm i
 
+COPY ./.env ./.env
 COPY ./tsconfig.json ./tsconfig.json
 COPY ./next-env.d.ts ./next-env.d.ts
 COPY ./next.config.js ./next.config.js

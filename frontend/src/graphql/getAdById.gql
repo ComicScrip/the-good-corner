@@ -5,9 +5,13 @@ query GetAdById($adId: Int!) {
     price
     picture
     location
-    owner
     description
     category {
+      id
+    }
+    owner {
+      avatar
+      nickname
       id
     }
   }

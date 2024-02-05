@@ -1,0 +1,9 @@
+query Profile {
+  profile {
+    id
+    email
+    role
+    nickname
+    avatar
+  }
+}

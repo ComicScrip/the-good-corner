@@ -1,12 +1,12 @@
 import Layout from "@/components/Layout";
-import { Category } from "@/types";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import {
   useCategoriesQuery,
   useCreateAdMutation,
 } from "@/graphql/generated/schema";
+import uploadImage from "@/uploadImage";
 
 export default function NewAd() {
   const [createAd] = useCreateAdMutation();
@@ -38,6 +38,7 @@ export default function NewAd() {
             <input
               required
               type="text"
+              minLength={5}
               name="title"
               id="title"
               placeholder="Zelda : Ocarina of time"
@@ -59,27 +60,17 @@ export default function NewAd() {
               className="input input-bordered w-full max-w-xs"
             />
             <input
+              accept="image/*"
               type="file"
-              onChange={(e) => {
-                console.log(e.target.files);
-
-                const imageToUpload = e.target.files?.[0];
-                if (imageToUpload) {
-                  const form = new FormData();
-                  form.append("file", imageToUpload);
-
-                  axios
-                    .post("http://localhost:8000/uploads", form)
-                    .then((res) => {
-                      console.log(res.data);
-                      setImagePreviewURL(res.data.url);
-                    });
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const res = await uploadImage(file);
+                  if (res) setImagePreviewURL(res.data.url);
                 }
               }}
             />
-            {imagePreviewURL && (
-              <img src={imagePreviewURL} alt="picture of the add" />
-            )}
+            {imagePreviewURL && <img src={imagePreviewURL} alt="picture" />}
           </div>
         </div>
 
@@ -94,20 +85,6 @@ export default function NewAd() {
               id="location"
               required
               placeholder="Paris"
-              className="input input-bordered w-full max-w-xs"
-            />
-          </div>
-
-          <div className="form-control w-full max-w-xs">
-            <label className="label" htmlFor="owner">
-              <span className="label-text">Auteur</span>
-            </label>
-            <input
-              type="text"
-              name="owner"
-              id="owner"
-              required
-              placeholder="Link"
               className="input input-bordered w-full max-w-xs"
             />
           </div>

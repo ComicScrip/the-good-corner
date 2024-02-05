@@ -1,10 +1,12 @@
-import { Category } from "@/types";
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import qs from "query-string";
-import { useCategoriesQuery } from "@/graphql/generated/schema";
+import {
+  useCategoriesQuery,
+  useProfileQuery,
+} from "@/graphql/generated/schema";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
 export default function Header() {
   const router = useRouter();
@@ -21,6 +23,11 @@ export default function Header() {
   }, [router.query.title]);
 
   const searchParams = qs.parse(window.location.search) as any;
+
+  const { data: currentUser, client } = useProfileQuery({
+    errorPolicy: "ignore",
+  });
+  const isLoggedIn = !!currentUser?.profile;
 
   return (
     <header className="header">
@@ -66,10 +73,32 @@ export default function Header() {
             </svg>
           </button>
         </form>
-        <Link href="/newAd" className="button link-button">
-          <span className="mobile-short-label">Publier</span>
-          <span className="desktop-long-label">Publier une annonce</span>
-        </Link>
+        {isLoggedIn && (
+          <>
+            <Link href="/newAd" className="button link-button">
+              <span className="mobile-short-label">Publier</span>
+              <span className="desktop-long-label">Publier une annonce</span>
+            </Link>
+            <Link href="/me" className="cursor-pointer">
+              <img
+                height={35}
+                width={35}
+                className="avatar rounded-full"
+                src={currentUser.profile.avatar}
+                alt={currentUser.profile.nickname}
+              />
+            </Link>
+          </>
+        )}
+
+        {!isLoggedIn && (
+          <Link href="/login" className="button link-button">
+            <span className="mobile-short-label">
+              <UserCircleIcon height={30} width={30} />
+            </span>
+            <span className="desktop-long-label">Se connecter</span>
+          </Link>
+        )}
       </div>
       <nav className="flex pl-2 h-[54px]">
         {categories.map((cat) => {
