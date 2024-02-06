@@ -4,7 +4,7 @@ import { Category } from "./entities/category";
 import { Tag } from "./entities/tag";
 import User, { hashPassword } from "./entities/user";
 
-async function clearDB() {
+export async function clearDB() {
   const runner = db.createQueryRunner();
   await runner.query("SET session_replication_role = 'replica'");
   await Promise.all(
