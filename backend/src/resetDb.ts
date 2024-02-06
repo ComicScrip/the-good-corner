@@ -21,7 +21,7 @@ export async function clearDB() {
   await db.synchronize();
 }
 
-async function main() {
+export default async function main() {
   await db.initialize();
   await clearDB();
 
