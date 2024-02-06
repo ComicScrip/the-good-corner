@@ -1,5 +1,6 @@
+import { ApolloServer } from "@apollo/server";
 import db from "../backend/src/db";
-import serverPromise from "../backend/src/index";
+import getSchema from "../backend/src/schema";
 
 // https://blog.tooljet.com/clearing-tables-before-each-test-nestjs-typeorm/
 // https://github.com/typeorm/typeorm/issues/2978#issuecomment-730596460
@@ -14,7 +15,7 @@ async function clearDB() {
 // TODO: clear db before each tests
 // TODO: close db connection after all tests
 
-export let s: any;
+let s: ApolloServer;
 
 export async function execute(operation: any) {
   return (await s.executeOperation(operation)) as any;
@@ -22,7 +23,9 @@ export async function execute(operation: any) {
 
 beforeAll(async () => {
   await db.initialize();
-  s = (await serverPromise).server;
+  const schema = (await getSchema()) as any;
+  s = new ApolloServer({ schema });
+  await s.start();
 });
 
 beforeEach(async () => {
@@ -31,5 +34,5 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await db.destroy();
-  await (await serverPromise).stop();
+  await s.stop();
 });
