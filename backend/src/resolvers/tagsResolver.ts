@@ -1,5 +1,4 @@
 import { Resolver, Mutation, Arg, Query, Authorized } from "type-graphql";
-import { GraphQLError } from "graphql";
 import { NewTagInput, Tag, UpdateTagInput } from "../entities/tag";
 import { Like } from "typeorm";
 import { notFoundError } from "../utils";

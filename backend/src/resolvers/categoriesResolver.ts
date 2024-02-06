@@ -1,6 +1,4 @@
 import { Resolver, Mutation, Arg, Query, Authorized } from "type-graphql";
-import { GraphQLError } from "graphql";
-import { validate } from "class-validator";
 import { Like } from "typeorm";
 import {
   Category,

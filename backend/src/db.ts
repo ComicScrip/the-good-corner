@@ -15,5 +15,5 @@ export default new DataSource({
   database: DB_NAME,
   entities: [Ad, Tag, Category, User],
   synchronize: true,
-  logging: true,
+  // logging: true,
 });

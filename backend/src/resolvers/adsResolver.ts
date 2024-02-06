@@ -8,12 +8,9 @@ import {
   Ctx,
 } from "type-graphql";
 import { Ad, NewAdInput, UpdateAdInput } from "../entities/ad";
-import { GraphQLError } from "graphql";
-import { validate } from "class-validator";
 import { ILike, In } from "typeorm";
 import { ContextType } from "../types";
 import {
-  invalidDataError,
   notFoundError,
   unauthaurizedError,
   unauthenticatedError,
