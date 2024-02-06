@@ -17,7 +17,7 @@ export default function AdCard({
             className="h-[200px] w-full object-cover rounded-md"
             src={picture}
           />
-          <div className="flex justify-between pt-6">
+          <div className="flex justify-between">
             <div className="ad-card-title">{title}</div>
             <div className="ad-card-price">{price} €</div>
           </div>
