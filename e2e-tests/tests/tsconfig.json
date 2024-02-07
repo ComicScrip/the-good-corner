@@ -4,7 +4,7 @@
     "module": "commonjs",
     "moduleResolution": "Node",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "../dist",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   }
