@@ -30,7 +30,7 @@ export class Ad extends BaseEntity {
   @Field()
   description: string;
 
-  @Field()
+  @Field(() => User)
   @ManyToOne(() => User, (c) => c.ads, {
     cascade: true,
     onDelete: "CASCADE",

@@ -1,0 +1,44 @@
+
+services:
+  testDB:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - 5432:5432
+    tmpfs: /var/lib/postgresql
+
+  backend:
+    depends_on:
+      testDB:
+        condition: service_healthy
+    env_file:
+      - backend/.env
+    environment:
+      - DB_HOST=testDB
+    build: backend
+    ports:
+      - 4001:4001
+    volumes:
+      - ./backend/src:/app/src
+
+  upload-service:
+    build: file-upload-service
+    ports:
+      - 8000:8000
+    volumes:
+      - ./file-upload-service/files:/app/files
+
+  frontend:
+    build: frontend
+    ports:
+      - 3000:3000
+    env_file:
+      - frontend/.env
+    volumes:
+      - ./frontend/src:/app/src
