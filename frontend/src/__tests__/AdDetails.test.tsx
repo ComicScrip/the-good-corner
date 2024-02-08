@@ -11,19 +11,19 @@ import {
   visitorUserMock,
 } from "./graphQLMocks";
 
-describe("AdDetais", () => {
+describe.only("AdDetais", () => {
   const ad = adDetailsMock.result.data.getAdById;
   mockRouter.push("/ads/1?adId=1");
 
   const renderAdDetails = (mocks: any[]) =>
     render(
-      <MockedProvider mocks={[categoriesMock, ...mocks]} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <AdDetais />
       </MockedProvider>
     );
 
   it("renders the ad's main info", async () => {
-    renderAdDetails([adminUserMock, adDetailsMock]);
+    renderAdDetails([adminUserMock, adDetailsMock, categoriesMock]);
     expect(await screen.findByText("Chargement...")).toBeInTheDocument();
     expect(await screen.findByText(ad.title)).toBeInTheDocument();
     expect(await screen.findByText(ad.location)).toBeInTheDocument();
@@ -32,19 +32,19 @@ describe("AdDetais", () => {
   });
 
   it("shows delete and edit button with non-admin profile owner of the ad", async () => {
-    renderAdDetails([visitorUserMock, adDetailsMock]);
+    renderAdDetails([visitorUserMock, adDetailsMock, categoriesMock]);
     expect(await screen.findByText(/.*Editer.*/)).toBeInTheDocument();
     expect(await screen.findByText(/.*Supprimer.*/)).toBeInTheDocument();
   });
 
   it("shows delete and edit button with admin profile", async () => {
-    renderAdDetails([adminUserMock, adDetailsMock]);
+    renderAdDetails([adminUserMock, adDetailsMock, categoriesMock]);
     expect(await screen.findByText(/.*Editer.*/)).toBeInTheDocument();
     expect(await screen.findByText(/.*Supprimer.*/)).toBeInTheDocument();
   });
 
   it("does not show delete and edit button with non-admin and non-owner of the ad", async () => {
-    renderAdDetails([visitor2UserMock, adDetailsMock]);
+    renderAdDetails([visitor2UserMock, adDetailsMock, categoriesMock]);
     // wait for the ad infos to appear on screen before checking buttons inside
     expect(await screen.findByText(ad.title)).toBeInTheDocument();
     expect(await screen.queryByTestId("deleteAdBtn")).toBeNull();
