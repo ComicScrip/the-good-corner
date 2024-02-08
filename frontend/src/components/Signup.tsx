@@ -45,6 +45,7 @@ export default function Signup() {
           <span className="label-text">Email</span>
         </label>
         <input
+          data-testid="signup-email"
           type="email"
           name="email"
           id="email"
@@ -61,6 +62,7 @@ export default function Signup() {
           type="text"
           name="nickname"
           id="nickname"
+          data-testid="signup-nickname"
           required
           className="input input-bordered w-full max-w-xs"
         />
@@ -71,6 +73,7 @@ export default function Signup() {
           <span className="label-text">Password</span>
         </label>
         <input
+          data-testid="signup-password"
           type="password"
           name="password"
           id="password"

@@ -52,6 +52,7 @@ export default function Login() {
             <span className="label-text">Email</span>
           </label>
           <input
+            data-testid="login-email"
             type="email"
             name="email"
             id="email"
@@ -65,6 +66,7 @@ export default function Login() {
             <span className="label-text">Password</span>
           </label>
           <input
+            data-testid="login-password"
             type="password"
             name="password"
             id="password"
