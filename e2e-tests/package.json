@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "pretest": "tsc --incremental -p tests/tsconfig.json",
+    "pretest": "rm -rf dist && tsc --incremental -p tests/tsconfig.json",
     "test": "playwright test -c dist"
   },
   "keywords": [],
