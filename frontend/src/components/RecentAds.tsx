@@ -1,14 +1,5 @@
-import { useEffect } from "react";
-import AdCard from "./AdCard";
-
-export type RecentAd = {
-  id: number;
-  title: string;
-  price: number;
-  picture: string;
-};
-
 import { useAdsQuery } from "@/graphql/generated/schema";
+import AdCard from "./AdCard";
 
 export default function RecentAds() {
   const { data, loading } = useAdsQuery();

@@ -1,10 +1,9 @@
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
-import axios from "axios";
-import { UserCircleIcon } from "@heroicons/react/24/outline";
-import { MapPinIcon } from "@heroicons/react/24/outline";
-import { PencilSquareIcon } from "@heroicons/react/24/outline";
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon } from "@heroicons/react/outline";
+import { LocationMarkerIcon } from "@heroicons/react/outline";
+import { PencilIcon } from "@heroicons/react/outline";
+import { TrashIcon } from "@heroicons/react/outline";
 import Link from "next/link";
 import {
   useDeleteAdMutation,
@@ -12,18 +11,10 @@ import {
   useProfileQuery,
 } from "@/graphql/generated/schema";
 
-export type AdDetail = {
-  id: number;
-  title: string;
-  price: number;
-  picture: string;
-};
-
 export default function AdDetails() {
   const router = useRouter();
   const [deleteAd] = useDeleteAdMutation();
   const { adId } = router.query;
-
   const { data } = useGetAdByIdQuery({
     variables: { adId: typeof adId === "string" ? parseInt(adId, 10) : 0 },
     skip: typeof adId === "undefined",
@@ -68,7 +59,7 @@ export default function AdDetails() {
                 </div>
 
                 <div className="flex items-center mt-2 ">
-                  <MapPinIcon width={24} height={24} className="mr-2" />{" "}
+                  <LocationMarkerIcon width={24} height={24} className="mr-2" />{" "}
                   {ad.location}
                 </div>
               </div>
@@ -78,13 +69,15 @@ export default function AdDetails() {
                   <Link
                     href={`/editAd/${ad.id}`}
                     className="flex items-center mt-3 cursor-pointer"
+                    data-testid="editAdBtn"
                   >
-                    <PencilSquareIcon width={24} height={24} className="mr-2" />
+                    <PencilIcon width={24} height={24} className="mr-2" />
                     Editer l'annonce
                   </Link>
 
                   <div
                     className="flex items-center mt-3 cursor-pointer"
+                    data-testid="deleteAdBtn"
                     onClick={() => {
                       if (
                         confirm(

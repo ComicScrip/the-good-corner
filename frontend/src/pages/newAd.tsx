@@ -1,6 +1,5 @@
 import Layout from "@/components/Layout";
 import { FormEvent, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/router";
 import {
   useCategoriesQuery,
