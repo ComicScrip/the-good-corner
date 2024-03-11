@@ -1,0 +1,25 @@
+name: integration-tests
+
+on:
+  pull_request:
+  workflow_call:
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Copy envfile
+        run: cp .env.example .env
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - run: npm run testDB:wait
+      - run: npm test

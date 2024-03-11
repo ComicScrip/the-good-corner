@@ -8,7 +8,8 @@
     "build": "tsc",
     "start:prod": "node build/index.js",
     "resetDB": "ts-node-dev src/resetDb.ts",
-    "test": "jest"
+    "test": "jest --runInBand",
+    "testDB:wait": "docker compose -f docker-compose.integration-tests.yml up testDB --wait"
   },
   "repository": {
     "type": "git",
