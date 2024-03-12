@@ -6,9 +6,9 @@ services:
       POSTGRES_PASSWORD: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
-      interval: 2s
+      interval: 1s
       timeout: 2s
-      retries: 20
+      retries: 30
     tmpfs: /var/lib/postgresql
     ports:
       - 5432:5432
@@ -25,9 +25,9 @@ services:
       - DB_HOST=testDB
     healthcheck:
       test: 'curl --fail --request GET -H ''content-type:application/json'' --url ''http://localhost:4001/graphql?query=%7B__typename%7D'''
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      interval: 1s
+      timeout: 2s
+      retries: 30
     depends_on:
       testDB:
         condition: service_healthy
