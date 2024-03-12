@@ -1,7 +1,7 @@
 name: "test-frontend"
 
 on:
-  push:
+  pull_request:
 
 jobs:
   test-client:
