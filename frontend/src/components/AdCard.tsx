@@ -2,7 +2,7 @@ import { Ad } from "@/graphql/generated/schema";
 import Link from "next/link";
 
 type AdCardProps = {
-  ad: Ad;
+  ad: { price: number; title: string; picture: string };
   link: string;
 };
 export default function AdCard({
