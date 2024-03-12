@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { RecentAd } from "./RecentAds";
 
 type AdCardProps = {
-  ad: RecentAd;
+  ad: { price: number; title: string; picture: string };
   link: string;
 };
 export default function AdCard({
