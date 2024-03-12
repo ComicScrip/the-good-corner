@@ -1,4 +1,3 @@
-import { Ad } from "@/graphql/generated/schema";
 import Link from "next/link";
 
 type AdCardProps = {
