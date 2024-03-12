@@ -48,5 +48,5 @@ test("cannot log in with incorrect email", async ({ page }) => {
   await page.getByTestId("login-email").fill("not@correct.com");
   await page.getByTestId("login-password").fill(password);
   await page.getByRole("button", { name: "Se Connecter" }).click();
-  await expect(page.getByText("Iddddentifiants incorrects")).toBeVisible();
+  await expect(page.getByText("Identifiants incorrects")).toBeVisible();
 });
