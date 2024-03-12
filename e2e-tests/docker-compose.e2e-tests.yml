@@ -6,21 +6,21 @@ services:
       POSTGRES_PASSWORD: postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+      interval: 2s
+      timeout: 2s
+      retries: 20
     tmpfs: /var/lib/postgresql
     ports:
       - 5432:5432
 
   backend:
     env_file:
-      - ./e2e-tests/.env
-    build: ./backend
+      - ./.env
+    build: ../backend
     ports:
       - 4001:4001
     volumes:
-      - ./backend/src:/app/src
+      - ../backend/src:/app/src
     environment:
       - DB_HOST=testDB
     healthcheck:
@@ -33,11 +33,11 @@ services:
         condition: service_healthy
 
   client:
-    build: './frontend'
+    build: '../frontend'
     ports:
       - 3000:3000
     volumes:
-      - ./frontend/src:/app/src
+      - ../frontend/src:/app/src
     depends_on:
       backend:
         condition: service_healthy
