@@ -14,6 +14,7 @@ const { SERVER_PORT: port, CORS_ALLOWED_ORIGINS: allowedOrigins } = env;
 schemaPromise.then(async (schema) => {
   await db.initialize();
   const app = express();
+
   const httpServer = http.createServer(app);
   const plugins = [ApolloServerPluginDrainHttpServer({ httpServer })];
   const server = new ApolloServer({ schema, plugins });
