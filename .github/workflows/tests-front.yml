@@ -16,7 +16,7 @@ jobs:
 
   test-client:
     needs: check_changes
-    if: needs.pre_job.outputs.should_skip != 'true'
+    if: needs.check_changes.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
