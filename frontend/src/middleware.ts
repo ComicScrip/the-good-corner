@@ -3,10 +3,6 @@ import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { JWTPayload } from "./types";
 
-interface Payload {
-  userId: number;
-}
-
 const JWT_PRIVATE_KEY = process.env.JWT_PRIVATE_KEY || "";
 
 export default async function middleware(request: NextRequest) {
@@ -16,7 +12,7 @@ export default async function middleware(request: NextRequest) {
   return await checkToken(token?.value, request);
 }
 
-export async function verify(token: string): Promise<Payload> {
+export async function verify(token: string): Promise<JWTPayload> {
   const { payload } = await jwtVerify<JWTPayload>(
     token,
     new TextEncoder().encode(JWT_PRIVATE_KEY)
