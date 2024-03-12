@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "docker compose up --build",
-    "prod": "docker compose -f docker-compose.production.yml up --build",
-    "test:e2e": "docker compose -f docker-compose.e2e-tests.yml up --build"
+    "prod": "docker compose -f docker-compose.production.yml up --build"
   },
   "author": "",
   "license": "ISC"
