@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  check_changes:
+  check_changes_front:
     runs-on: ubuntu-latest
     outputs:
       should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -15,8 +15,8 @@ jobs:
           paths: '["frontend/**"]'
 
   test-client:
-    needs: check_changes
-    if: needs.check_changes.outputs.should_skip != 'true'
+    needs: check_changes_front
+    if: needs.check_changes_front.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     defaults:
       run:
