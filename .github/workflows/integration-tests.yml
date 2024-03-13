@@ -4,7 +4,18 @@ on:
   pull_request:
 
 jobs:
+  check_changes_back:
+    runs-on: ubuntu-latest
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@v5
+        with:
+          paths: '["backend/**"]'
   integration-tests:
+    needs: check_changes_back
+    if: needs.check_changes_back.outputs.should_skip != 'true'
     runs-on: ubuntu-latest
     defaults:
       run:

@@ -28,3 +28,5 @@ jobs:
           context: "{{defaultContext}}:frontend"
           file: "Dockerfile.production"
           tags: scrip/the-good-corner-client:staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
