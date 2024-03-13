@@ -29,7 +29,7 @@ export default function Login() {
       await login({ variables: { data: { ...formJSON } } });
       if (redirectURLAfterLogin) router.push(redirectURLAfterLogin as string);
     } catch (err) {
-      setError("invalid credentials");
+      setError("Identifiants incorrects");
     } finally {
       client.resetStore();
     }

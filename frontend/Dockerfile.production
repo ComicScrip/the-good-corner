@@ -13,6 +13,12 @@ COPY ./tailwind.config.js ./tailwind.config.js
 COPY ./postcss.config.js ./postcss.config.js
 COPY ./src ./src
 
+ARG NEXT_PUBLIC_GRAPHQL_API_URL
+ENV NEXT_PUBLIC_GRAPHQL_API_URL ${NEXT_PUBLIC_GRAPHQL_API_URL}
+
+ARG NEXT_PUBLIC_UPLOAD_API_ENDPOINT
+ENV NEXT_PUBLIC_UPLOAD_API_ENDPOINT ${NEXT_PUBLIC_UPLOAD_API_ENDPOINT}
+
 RUN npm run build
 
 CMD npm start
