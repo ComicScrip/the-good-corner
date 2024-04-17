@@ -20,7 +20,7 @@ services:
     stop_grace_period: 0s
     build: file-upload-service
     volumes:
-      - ./file-upload-service/files:/app/files
+      - prodUploads:/app/files
 
   backend:
     environment:
@@ -57,3 +57,4 @@ services:
 
 volumes:
   prodDB:
+  prodUploads:
