@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "docker compose up --build",
-    "prod": "docker compose -f docker-compose.production.yml up --build"
+    "prod": "docker compose -f docker-compose.production.yml up --build",
+    "staging": "GATEWAY_PORT=81 docker compose -f docker-compose.production.yml up --build"
   },
   "author": "",
   "license": "ISC"

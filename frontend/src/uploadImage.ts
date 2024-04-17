@@ -5,7 +5,7 @@ export default async function uploadImage(file: File) {
   form.append("file", file);
   return axios
     .post<{ url: string }>(
-      process.env.NEXT_PUBLIC_UPLOAD_API_ENDPOINT as string,
+      (process.env.NEXT_PUBLIC_UPLOAD_API_ENDPOINT as string) || "/uploads",
       form
     )
     .catch(console.error);
