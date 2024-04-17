@@ -20,10 +20,14 @@ app.post("/uploads", async (c) => {
   const { file }: { file: File } = await c.req.parseBody();
   console.log("there");
 
-  const path = "files/" + Date.now() + "-" + file.name;
+  const path = ("files/" + Date.now() + "-" + file.name).replaceAll(" ", "");
   console.log({ path });
 
-  await Bun.write(path, file);
+  try {
+    await Bun.write(path, file);
+  } catch (err) {
+    console.error(err);
+  }
 
   const url = process.env.HOST
     ? process.env.HOST + path
