@@ -18,7 +18,11 @@ app.use("/files/*", serveStatic({ root: "." }));
 app.post("/uploads", async (c) => {
   console.log("here");
   const { file }: { file: File } = await c.req.parseBody();
+  console.log("there");
+
   const path = "files/" + Date.now() + "-" + file.name;
+  console.log({ path });
+
   await Bun.write(path, file);
 
   const url = process.env.HOST
