@@ -28,6 +28,8 @@ services:
       DB_PASS: ${DB_PASS-postgres}
       DB_USER: ${DB_USER-postgres}
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:-changeme}
+      NODE_ENV: ${NODE_ENV:-production}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-changeme}
     stop_grace_period: 0s
     depends_on:
       db:
