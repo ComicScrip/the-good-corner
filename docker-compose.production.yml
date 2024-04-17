@@ -35,17 +35,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    build: 
-      context: backend
-      dockerfile: Dockerfile.production
+    image: scrip/the-good-corner-back
+
 
   frontend:
     environment:
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:-changeme}
     stop_grace_period: 0s
-    build:
-      context: frontend
-      dockerfile: Dockerfile.production
+    image: scrip/the-good-corner-front
 
   gateway:
     stop_grace_period: 0s

@@ -1,9 +1,16 @@
 name: build and push production server to dockerhub
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_call:
+    inputs:
+      image_name:
+        type: string
+        required: true
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
 
 jobs:
   build-and-push-server:
@@ -24,6 +31,6 @@ jobs:
           push: true
           context: "{{defaultContext}}:backend"
           file: "Dockerfile.production"
-          tags: scrip/the-good-corner-server:staging
+          tags: ${{ inputs.image_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
