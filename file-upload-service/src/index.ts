@@ -20,7 +20,12 @@ app.post("/uploads", async (c) => {
   const path = "files/" + Date.now() + "-" + file.name;
   await Bun.write(path, file);
 
-  return c.json({ path, url: c.req.url.replace("uploads", path) });
+  return c.json({
+    path,
+    url: process.env.HOST
+      ? process.env.HOST + path
+      : c.req.url.replace("uploads", path),
+  });
 });
 
 console.log("server ready");
