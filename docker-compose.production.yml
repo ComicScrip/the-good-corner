@@ -4,12 +4,15 @@ services:
     image: postgres:15-alpine
     stop_grace_period: 0s
     environment:
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_PASSWORD: ${DB_PASS-postgres}
+      PGUSER: ${DB_USER-postgres}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 2s
       timeout: 5s
-      retries: 5
+      retries: 10
+    volumes:
+      - prodDB:/var/lib/postgresql/data
 
   upload-service:
     environment:
@@ -17,27 +20,29 @@ services:
     stop_grace_period: 0s
     build: file-upload-service
     volumes:
-      - ./file-upload-service/files:/app/files
+      - prodUploads:/app/files
 
   backend:
     environment:
-      - DB_HOST=db
+      DB_HOST: db
+      DB_PASS: ${DB_PASS-postgres}
+      DB_USER: ${DB_USER-postgres}
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:-changeme}
     stop_grace_period: 0s
     depends_on:
       db:
         condition: service_healthy
-
     build: 
       context: backend
       dockerfile: Dockerfile.production
-    env_file: backend/.env
 
   frontend:
+    environment:
+      JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:-changeme}
     stop_grace_period: 0s
     build:
       context: frontend
       dockerfile: Dockerfile.production
-    env_file: frontend/.env
 
   gateway:
     stop_grace_period: 0s
@@ -47,4 +52,7 @@ services:
       dockerfile: Dockerfile.production
     ports:
       - ${GATEWAY_PORT-80}:80
-    
+
+volumes:
+  prodDB:
+  prodUploads:
