@@ -16,12 +16,9 @@ app.get("/", (c) =>
 app.use("/files/*", serveStatic({ root: "." }));
 
 app.post("/uploads", async (c) => {
-  console.log("here");
   const { file }: { file: File } = await c.req.parseBody();
-  console.log("there");
-
   const path = ("files/" + Date.now() + "-" + file.name).replaceAll(" ", "");
-  console.log({ path });
+  console.log({ path, file });
 
   try {
     await Bun.write(path, file);
@@ -35,13 +32,10 @@ app.post("/uploads", async (c) => {
 
   console.log({ url });
 
-  return c.json({
-    path,
-    url,
-  });
+  return c.json({ path, url });
 });
 
-console.log("server ready, listening on port :", process.env.PORT);
+console.log("server ready");
 
 process.on("SIGINT", () => {
   console.log("Exiting...");
