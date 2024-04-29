@@ -6,7 +6,6 @@ describe("AdCard component", () => {
     const view = render(
       <AdCard
         ad={{
-          id: 1,
           picture: "https://img.com/i.png",
           title: "testing",
           price: 42,
