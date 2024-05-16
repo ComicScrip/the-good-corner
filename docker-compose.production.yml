@@ -15,6 +15,13 @@ services:
     volumes:
       - prodDB:/var/lib/postgresql/data
 
+  kvStore:
+    stop_grace_period: 0s
+    command: valkey-server --save 1 1 --loglevel warning
+    image: valkey/valkey:7.2.5-alpine3.19
+    volumes:
+      - prodKVStore:/data
+
   upload-service:
     environment:
       - HOST=/
@@ -31,6 +38,7 @@ services:
       JWT_PRIVATE_KEY: ${JWT_PRIVATE_KEY:-changeme}
       NODE_ENV: ${NODE_ENV:-production}
       CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-changeme}
+      KVSTORE_HOST: ${KVSTORE_HOST:-kvStore}
     stop_grace_period: 0s
     depends_on:
       db:
@@ -56,3 +64,4 @@ services:
 volumes:
   prodDB:
   prodUploads:
+  prodKVStore:

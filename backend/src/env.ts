@@ -13,4 +13,5 @@ export default load({
   DB_USER: { type: String, optional: true, default: "postgres" },
   DB_PASS: { type: String, optional: true, default: "postgres" },
   DB_NAME: { type: String, optional: true, default: "postgres" },
+  KVSTORE_HOST: { type: String, optional: true, default: "localhost" },
 });

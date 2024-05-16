@@ -24,7 +24,9 @@ services:
 
   backend:
     environment:
-      - DB_HOST=db
+      DB_HOST: db
+      KVSTORE_HOST: ${KVSTORE_HOST:-kvStore}
+
     stop_grace_period: 0s
     depends_on:
       db:

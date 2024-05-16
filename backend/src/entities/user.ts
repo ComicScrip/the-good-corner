@@ -20,8 +20,8 @@ export type Role = "visitor" | "admin";
 class User extends BaseEntity {
   @BeforeUpdate()
   async preSave() {
-    const sessionStore = await new SesionService(await kvStore);
-    await sessionStore.setUser(this);
+    const sessionStore = new SesionService(await kvStore);
+    sessionStore.setUser(this);
   }
 
   @Field()

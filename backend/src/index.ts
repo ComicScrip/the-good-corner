@@ -8,14 +8,15 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import env from "./env";
 import db from "./db";
 import schemaPromise from "./schema";
-import kvStore from "./kvStore";
-import { SesionService } from "./services/SessionService";
 import { ContextType } from "./types";
+import { SesionService } from "./services/SessionService";
+import kvStore from "./kvStore";
 
 const { SERVER_PORT: port, CORS_ALLOWED_ORIGINS: allowedOrigins } = env;
 
 schemaPromise.then(async (schema) => {
-  const sessionStore = new SesionService(await kvStore);
+  const redis = await kvStore;
+  const sessionStore = new SesionService(redis);
   await db.initialize();
   const app = express();
   const httpServer = http.createServer(app);

@@ -20,9 +20,7 @@ export async function authChecker(
   if (typeof decoded !== "object") return false;
   const id = decoded.userId;
 
-  //const currentUser = await db.getRepository(User).findOneBy({ id });
   const currentUser = await sessionStore.getUser(id);
-  console.log({ currentUser });
 
   if (currentUser === null) return false;
   context.currentUser = currentUser;
