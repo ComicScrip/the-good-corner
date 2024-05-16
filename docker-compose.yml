@@ -18,7 +18,7 @@ services:
     command: valkey-server --save 1 1 --loglevel warning
     image: valkey/valkey:7.2.5-alpine3.19
     volumes:
-      - ./kvStore:/data
+      - devKVStore:/data
     ports:
       - 6379:6379
 
@@ -56,4 +56,6 @@ services:
       - frontend/.env
     volumes:
       - ./frontend/src:/app/src
-    
+
+volumes:
+  devKVStore:

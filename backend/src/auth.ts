@@ -2,9 +2,6 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import { ContextType, JWTPayload } from "./types";
 import env from "./env";
-import db from "./db";
-import User from "./entities/user";
-import kvStore from "./kvStore";
 const { JWT_PRIVATE_KEY } = env;
 
 export async function authChecker(
@@ -15,6 +12,7 @@ export async function authChecker(
   const tokenInAuthHeaders = req.headers.authorization?.split(" ")[1];
   const tokenInCookie = cookie.parse(req.headers.cookie ?? "").token;
   const token = tokenInAuthHeaders ?? tokenInCookie;
+
   if (typeof token !== "string") return false;
   const decoded = jwt.verify(token, JWT_PRIVATE_KEY) as JWTPayload;
   if (typeof decoded !== "object") return false;
