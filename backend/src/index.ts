@@ -8,19 +8,23 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import env from "./env";
 import db from "./db";
 import schemaPromise from "./schema";
+import kvStore from "./kvStore";
+import { SesionService } from "./services/SessionService";
+import { ContextType } from "./types";
 
 const { SERVER_PORT: port, CORS_ALLOWED_ORIGINS: allowedOrigins } = env;
 
 schemaPromise.then(async (schema) => {
+  const sessionStore = new SesionService(await kvStore);
   await db.initialize();
   const app = express();
   const httpServer = http.createServer(app);
   const plugins = [ApolloServerPluginDrainHttpServer({ httpServer })];
-  const server = new ApolloServer({ schema, plugins });
+  const server = new ApolloServer<ContextType>({ schema, plugins });
   await server.start();
   const corsConfig = { origin: allowedOrigins.split(","), credentials: true };
   app.use(cors<cors.CorsRequest>(corsConfig));
-  const context = async ({ req, res }: any) => ({ req, res });
+  const context = async ({ req, res }: any) => ({ req, res, sessionStore });
   const expressMW = expressMiddleware(server, { context });
   app.use(express.json(), expressMW);
   await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));

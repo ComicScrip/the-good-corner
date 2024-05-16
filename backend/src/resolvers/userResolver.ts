@@ -44,6 +44,8 @@ class UserResolver {
     // https://www.npmjs.com/package/jsonwebtoken
     const token = jwt.sign({ userId: user.id }, env.JWT_PRIVATE_KEY);
 
+    await ctx.sessionStore.setUser(user);
+
     // https://stackoverflow.com/a/40135050
     ctx.res.cookie("token", token, {
       secure: env.NODE_ENV === "production",

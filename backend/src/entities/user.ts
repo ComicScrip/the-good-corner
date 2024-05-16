@@ -3,19 +3,27 @@ import { IsEmail, IsUrl, Matches, MinLength } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
 import {
   BaseEntity,
+  BeforeUpdate,
   Column,
   Entity,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Ad } from "./ad";
+import { SesionService } from "../services/SessionService";
+import kvStore from "../kvStore";
 
 export type Role = "visitor" | "admin";
 
 @Entity()
 @ObjectType()
 class User extends BaseEntity {
+  @BeforeUpdate()
+  async preSave() {
+    const sessionStore = await new SesionService(await kvStore);
+    await sessionStore.setUser(this);
+  }
+
   @Field()
   @PrimaryGeneratedColumn()
   id: number;
