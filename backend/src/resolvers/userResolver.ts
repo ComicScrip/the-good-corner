@@ -50,11 +50,15 @@ class UserResolver {
       httpOnly: true,
     });
 
+    await ctx.sessionStore.setUser(user);
+
     return token;
   }
 
   @Mutation(() => String)
   async logout(@Ctx() ctx: ContextType): Promise<string> {
+    if (ctx?.currentUser?.id)
+      await ctx.sessionStore.delUser(ctx?.currentUser?.id);
     ctx.res.clearCookie("token");
     return "OK";
   }

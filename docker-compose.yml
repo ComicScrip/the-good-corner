@@ -2,6 +2,7 @@
 services:
   db:
     image: postgres:15-alpine
+    stop_grace_period: 0s
     environment:
       - POSTGRES_PASSWORD=postgres
     healthcheck:
@@ -12,7 +13,21 @@ services:
     ports:
       - 5432:5432
 
+  kvStore:
+    stop_grace_period: 0s
+    command: valkey-server --save 1 1 --loglevel warning
+    image: valkey/valkey:7.2.5-alpine3.19
+    volumes:
+      - devKVStore:/data
+    ports:
+      - 6379:6379
+
   backend:
+    environment:
+      DB_HOST: db
+      KVSTORE_HOST: ${KVSTORE_HOST:-kvStore}
+
+    stop_grace_period: 0s
     depends_on:
       db:
         condition: service_healthy
@@ -25,6 +40,7 @@ services:
       - ./backend/src:/app/src
 
   upload-service:
+    stop_grace_period: 0s
     build: file-upload-service
     ports:
       - 8000:8000
@@ -32,6 +48,7 @@ services:
       - ./file-upload-service/files:/app/files
 
   frontend:
+    stop_grace_period: 0s
     build: frontend
     ports:
       - 3000:3000
@@ -39,4 +56,6 @@ services:
       - frontend/.env
     volumes:
       - ./frontend/src:/app/src
-    
+
+volumes:
+  devKVStore:
