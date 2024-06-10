@@ -2,6 +2,7 @@
 services:
   db:
     image: postgres:15-alpine
+    stop_grace_period: 0s
     environment:
       - POSTGRES_PASSWORD=postgres
     healthcheck:
@@ -13,11 +14,14 @@ services:
       - 5432:5432
 
   backend:
+    stop_grace_period: 0s
     depends_on:
       db:
         condition: service_healthy
     env_file:
       - backend/.env
+    environment:
+      - DB_HOST=db
     build: backend
     ports:
       - 4001:4001
@@ -25,6 +29,7 @@ services:
       - ./backend/src:/app/src
 
   upload-service:
+    stop_grace_period: 0s
     build: file-upload-service
     ports:
       - 8000:8000
@@ -32,6 +37,7 @@ services:
       - ./file-upload-service/files:/app/files
 
   frontend:
+    stop_grace_period: 0s
     build: frontend
     ports:
       - 3000:3000
