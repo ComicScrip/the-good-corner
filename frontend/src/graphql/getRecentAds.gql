@@ -1,8 +1,16 @@
-query Ads {
-  ads {
-    id
-    title
-    price
-    picture
+query Ads($tagIds: String, $title: String, $categoryId: Int, $ownerId: Int) {
+  ads(
+    tagIds: $tagIds
+    title: $title
+    categoryId: $categoryId
+    ownerId: $ownerId
+  ) {
+    list {
+      title
+      price
+      id
+      picture
+    }
+    totalCount
   }
 }
