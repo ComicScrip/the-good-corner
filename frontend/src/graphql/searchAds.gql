@@ -1,18 +1,25 @@
 query SearchAds(
+  $skip: Int
+  $take: Int
+  $tagIds: String
   $title: String
   $categoryId: Int
   $ownerId: Int
-  $tagsId: String
 ) {
   ads(
+    skip: $skip
+    take: $take
+    tagIds: $tagIds
     title: $title
     categoryId: $categoryId
     ownerId: $ownerId
-    tagsId: $tagsId
   ) {
-    id
-    picture
-    price
-    title
+    list {
+      title
+      price
+      id
+      picture
+    }
+    totalCount
   }
 }

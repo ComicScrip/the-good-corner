@@ -137,9 +137,15 @@ export type ObjectId = {
   id: Scalars['Int'];
 };
 
+export type PaginatedAds = {
+  __typename?: 'PaginatedAds';
+  list: Array<Ad>;
+  totalCount: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
-  ads: Array<Ad>;
+  ads: PaginatedAds;
   categories: Array<Category>;
   getAdById: Ad;
   profile: User;
@@ -150,7 +156,9 @@ export type Query = {
 export type QueryAdsArgs = {
   categoryId?: InputMaybe<Scalars['Int']>;
   ownerId?: InputMaybe<Scalars['Int']>;
-  tagsId?: InputMaybe<Scalars['String']>;
+  skip?: Scalars['Int'];
+  tagIds?: InputMaybe<Scalars['String']>;
+  take?: Scalars['Int'];
   title?: InputMaybe<Scalars['String']>;
 };
 
@@ -280,10 +288,15 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: number, email: string, role: string, nickname: string, avatar: string } };
 
-export type AdsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AdsQueryVariables = Exact<{
+  tagIds?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  categoryId?: InputMaybe<Scalars['Int']>;
+  ownerId?: InputMaybe<Scalars['Int']>;
+}>;
 
 
-export type AdsQuery = { __typename?: 'Query', ads: Array<{ __typename?: 'Ad', id: number, title: string, price: number, picture: string }> };
+export type AdsQuery = { __typename?: 'Query', ads: { __typename?: 'PaginatedAds', totalCount: number, list: Array<{ __typename?: 'Ad', title: string, price: number, id: number, picture: string }> } };
 
 export type TagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -303,14 +316,16 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = { __typename?: 'Mutation', logout: string };
 
 export type SearchAdsQueryVariables = Exact<{
+  skip?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+  tagIds?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   categoryId?: InputMaybe<Scalars['Int']>;
   ownerId?: InputMaybe<Scalars['Int']>;
-  tagsId?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type SearchAdsQuery = { __typename?: 'Query', ads: Array<{ __typename?: 'Ad', id: number, picture: string, price: number, title: string }> };
+export type SearchAdsQuery = { __typename?: 'Query', ads: { __typename?: 'PaginatedAds', totalCount: number, list: Array<{ __typename?: 'Ad', title: string, price: number, id: number, picture: string }> } };
 
 export type RegisterMutationVariables = Exact<{
   data: UserInput;
@@ -666,12 +681,15 @@ export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
 export const AdsDocument = gql`
-    query Ads {
-  ads {
-    id
-    title
-    price
-    picture
+    query Ads($tagIds: String, $title: String, $categoryId: Int, $ownerId: Int) {
+  ads(tagIds: $tagIds, title: $title, categoryId: $categoryId, ownerId: $ownerId) {
+    list {
+      title
+      price
+      id
+      picture
+    }
+    totalCount
   }
 }
     `;
@@ -688,6 +706,10 @@ export const AdsDocument = gql`
  * @example
  * const { data, loading, error } = useAdsQuery({
  *   variables: {
+ *      tagIds: // value for 'tagIds'
+ *      title: // value for 'title'
+ *      categoryId: // value for 'categoryId'
+ *      ownerId: // value for 'ownerId'
  *   },
  * });
  */
@@ -799,12 +821,22 @@ export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const SearchAdsDocument = gql`
-    query SearchAds($title: String, $categoryId: Int, $ownerId: Int, $tagsId: String) {
-  ads(title: $title, categoryId: $categoryId, ownerId: $ownerId, tagsId: $tagsId) {
-    id
-    picture
-    price
-    title
+    query SearchAds($skip: Int, $take: Int, $tagIds: String, $title: String, $categoryId: Int, $ownerId: Int) {
+  ads(
+    skip: $skip
+    take: $take
+    tagIds: $tagIds
+    title: $title
+    categoryId: $categoryId
+    ownerId: $ownerId
+  ) {
+    list {
+      title
+      price
+      id
+      picture
+    }
+    totalCount
   }
 }
     `;
@@ -821,10 +853,12 @@ export const SearchAdsDocument = gql`
  * @example
  * const { data, loading, error } = useSearchAdsQuery({
  *   variables: {
+ *      skip: // value for 'skip'
+ *      take: // value for 'take'
+ *      tagIds: // value for 'tagIds'
  *      title: // value for 'title'
  *      categoryId: // value for 'categoryId'
  *      ownerId: // value for 'ownerId'
- *      tagsId: // value for 'tagsId'
  *   },
  * });
  */

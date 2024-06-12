@@ -6,11 +6,11 @@ export default function RecentAds() {
 
   if (loading) return "Chargement...";
 
-  const ads = data?.ads || [];
+  const ads = data?.ads.list || [];
 
   return (
     <div className="pt-6">
-      <h2 className="text-2xl mb-6">Annonces Récentes - test update</h2>
+      <h2 className="text-2xl mb-6">Annonces Récentes</h2>
 
       <section className="flex flex-wrap pb-24" data-testid="ads-list">
         {ads.map((ad) => (
