@@ -9,10 +9,10 @@ import {
   ManyToMany,
 } from "typeorm";
 import { Length, Min } from "class-validator";
-import { ObjectType, Field, Int, InputType } from "type-graphql";
+import { ObjectType, Field, Int, InputType, ArgsType } from "type-graphql";
 import { Category } from "./category";
 import { Tag } from "./tag";
-import { ObjectId } from "../utils";
+import { ObjectId, PaginationArgs } from "../utils";
 import User from "./user";
 
 @Entity()
@@ -120,4 +120,28 @@ export class UpdateAdInput {
 
   @Field({ nullable: true })
   location?: string;
+}
+
+@ObjectType()
+export class PaginatedAds {
+  @Field(() => [Ad])
+  list: Ad[];
+
+  @Field(() => Int)
+  totalCount: number;
+}
+
+@ArgsType()
+export class GetAdsArgs extends PaginationArgs {
+  @Field({ nullable: true })
+  tagIds?: string;
+
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field(() => Int, { nullable: true })
+  categoryId?: number;
+
+  @Field(() => Int, { nullable: true })
+  ownerId?: number;
 }

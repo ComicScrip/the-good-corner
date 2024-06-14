@@ -6,14 +6,18 @@ import {
   Int,
   Authorized,
   Ctx,
+  Args,
 } from "type-graphql";
-import { Ad, NewAdInput, UpdateAdInput } from "../entities/ad";
-import { GraphQLError } from "graphql";
-import { validate } from "class-validator";
+import {
+  Ad,
+  GetAdsArgs,
+  NewAdInput,
+  PaginatedAds,
+  UpdateAdInput,
+} from "../entities/ad";
 import { ILike, In } from "typeorm";
 import { ContextType } from "../types";
 import {
-  invalidDataError,
   notFoundError,
   unauthaurizedError,
   unauthenticatedError,
@@ -21,14 +25,11 @@ import {
 
 @Resolver(Ad)
 class AdsResolver {
-  @Query(() => [Ad])
+  @Query(() => PaginatedAds)
   async ads(
-    @Arg("tagsId", { nullable: true }) tagIds?: string,
-    @Arg("categoryId", () => Int, { nullable: true }) categoryId?: number,
-    @Arg("ownerId", () => Int, { nullable: true }) ownerId?: number,
-    @Arg("title", { nullable: true }) title?: string
-  ) {
-    return Ad.find({
+    @Args() { tagIds, categoryId, title, ownerId, skip, take }: GetAdsArgs
+  ): Promise<PaginatedAds> {
+    const [ads, totalCount] = await Ad.findAndCount({
       relations: { category: true, tags: true },
       where: {
         tags: {
@@ -45,7 +46,14 @@ class AdsResolver {
           id: ownerId,
         },
       },
+      skip,
+      take,
     });
+
+    return {
+      list: ads,
+      totalCount,
+    };
   }
 
   @Query(() => Ad)

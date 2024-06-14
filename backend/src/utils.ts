@@ -1,10 +1,19 @@
-import { InputType, Field, Int } from "type-graphql";
+import { InputType, Field, Int, ArgsType } from "type-graphql";
 import { GraphQLError } from "graphql";
 
 @InputType()
 export class ObjectId {
   @Field(() => Int)
   id!: number;
+}
+
+@ArgsType()
+export class PaginationArgs {
+  @Field((type) => Int, {nullable: true})
+  skip?: number = 0;
+
+  @Field((type) => Int, {nullable: true})
+  take?: number = 10;
 }
 
 export function unauthenticatedError() {
