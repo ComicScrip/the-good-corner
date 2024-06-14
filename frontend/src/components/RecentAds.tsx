@@ -6,7 +6,7 @@ export default function RecentAds() {
 
   if (loading) return "Chargement...";
 
-  const ads = data?.ads || [];
+  const ads = data?.ads.list || [];
 
   return (
     <div className="pt-6">

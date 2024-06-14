@@ -1,8 +1,11 @@
-query Ads {
-  ads {
-    id
-    title
-    price
-    picture
+query Ads($skip: Int, $take: Int) {
+  ads(skip: $skip, take: $take) {
+    list {
+      title
+      id
+      picture
+      price
+    }
+    totalCount
   }
 }
