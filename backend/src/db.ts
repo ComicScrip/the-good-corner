@@ -14,8 +14,10 @@ const db = new DataSource({
   password: DB_PASS,
   database: DB_NAME,
   entities: [Ad, Tag, Category, User],
-  synchronize: true,
   logging: env.NODE_ENV !== "test",
+  synchronize: false,
+  migrations: ["migrations/*.{js,ts}"],
+  migrationsRun: true,
 });
 
 export async function clearDB() {

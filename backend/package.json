@@ -9,7 +9,11 @@
     "start:prod": "node build/index.js",
     "resetDB": "ts-node-dev src/resetDb.ts",
     "test": "jest",
-    "testDB:wait": "docker compose -f docker-compose.integration-tests.yml up testDB --wait"
+    "testDB:wait": "docker compose -f docker-compose.integration-tests.yml up testDB --wait",
+    "migration:create": "typeorm-ts-node-commonjs migration:create",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/db.ts",
+    "migration:up": "typeorm-ts-node-commonjs migration:run -d src/db.ts",
+    "migration:down": "typeorm-ts-node-commonjs migration:revert -d src/db.ts"
   },
   "repository": {
     "type": "git",
