@@ -66,6 +66,9 @@ export class Ad extends BaseEntity {
   })
   @Field(() => [Tag])
   tags: Tag[];
+
+  @Column({ default: false })
+  canBeDelivered: boolean;
 }
 
 @InputType()
